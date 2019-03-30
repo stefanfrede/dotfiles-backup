@@ -1,7 +1,7 @@
 [user]
   name = Stefan Frede
-  email = git@frede.io
-  signingkey = 264C54B079BECF87
+  email = stefan@frede.io
+  signingkey = 65B04D7D3D9E71E0
 [push]
   default = current
 [color]

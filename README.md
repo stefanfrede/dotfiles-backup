@@ -231,15 +231,15 @@ https://www.linode.com/docs/networking/vpn/set-up-a-hardened-openvpn-server/
     -A OUTPUT -o eth0 -p tcp -m state --state NEW,ESTABLISHED --dport 80 -j ACCEPT
     -A OUTPUT -o eth0 -p tcp -m state --state NEW,ESTABLISHED --dport 443 -j ACCEPT
 
-    # Allow outgoing ip 217.86.193.108 on port 6812 on eht0 to connect with ARIGO Software GmbH > openVPN
+    # Allow outgoing ip 217.86.193.108 on port 6812 on eth0 to connect with ARIGO Software GmbH > openVPN
     -A OUTPUT -o eth0 -p udp -d 217.86.193.108/24 --dport 6812 -m state --state NEW,ESTABLISHED -j ACCEPT
     -A INPUT -i eth0 -p udp --sport 6812 -m state --state ESTABLISHED -j ACCEPT
 
-    # Allow outgoing port 6812 on eht0 to connect with ARIGO Software GmbH > Docker
+    # Allow outgoing port 6812 on eth0 to connect with ARIGO Software GmbH > Docker
     -A OUTPUT -o eth0 -p tcp --dport 5000 -m state --state NEW,ESTABLISHED -j ACCEPT
     -A INPUT -i eth0 -p tcp --sport 5000 -m state --state ESTABLISHED -j ACCEPT
 
-    # Allow incoming port 6822 on eht0 to connect with ARIGO Software GmbH > GitLab
+    # Allow incoming port 6822 on eth0 to connect with ARIGO Software GmbH > GitLab
     -A INPUT -i eth0 -p tcp -m state --state ESTABLISHED --sport 6822 -j ACCEPT
     -A OUTPUT -o eth0 -p tcp -m state --state NEW,ESTABLISHED --dport 6822 -j ACCEPT
 

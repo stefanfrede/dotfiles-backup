@@ -1,359 +1,399 @@
-# Debian 9 server setup
+# Secure your Debian 9 server
 
 ## Add a Limited User Account
+https://www.linode.com/docs/security/securing-your-server/#add-a-limited-user-account
 
-Up to this point, you have accessed your server as the root user, which has unlimited privileges and can execute any command–even one that could accidentally disrupt your server.
+To add a new user log in to your server  via SSH. Replace the `0.0.0.0` with
+your server’s IP address:
+
+```shell
+ssh root@0.0.0.0
+```
 
 ### Add a user
 
-Create the user. You’ll then be asked to assign the user a password:
+A standard Debian Server installation does not include sudo by default. If you
+don’t already have sudo, you’ll need to install it before going further.
 
-```
-adduser stefanfrede
-```
+1. Create the user. You’ll then be asked to assign the user a password:
 
-Add the user to the sudo group so you’ll have administrative privileges:
+    ```shell
+    adduser stefanfrede
+    ```
 
-```
-adduser stefanfrede sudo
-```
+2. Add the user to the `sudo` group so you’ll have administrative privileges:
 
-After creating your limited user, disconnect from your server:
+    ```shell
+    adduser stefanfrede sudo
+    ```
 
-```
-exit
-```
+3. After creating your limited user, disconnect from your server:
 
-Log back in as your new user. Replace the example IP address with your server’s IP address:
+    ```shell
+    exit
+    ```
 
-```
-ssh stefanfrede@0.0.0.0
-```
+4. Log back in as your new user. Replace the `0.0.0.0` with your server’s IP
+   address:
 
-Now you can administer your server from your new user account instead of `root`. Nearly all superuser commands can be executed with `sudo` (example: `sudo iptables -L -nv`) and those commands will be logged to `/var/log/auth.log`.
+    ```shell
+    ssh stefanfrede@0.0.0.0
+    ```
+
+Now you can administer your server from your new user account instead of `root`.
+Nearly all superuser commands can be executed with `sudo` (example: `sudo
+iptables -L -nv`) and those commands will be logged to `/var/log/auth.log`.
 
 ## Install a Mosh Server as SSH Alternative
 
-Mosh is available in Debian’s backports repositories. You’ll need to add stretch-backports to your sources.list, update your package information, then install from the backports repository. Here’s how:
+https://www.linode.com/docs/networking/ssh/install-mosh-server-as-ssh-alternative-on-linux/
 
-```
-sudo deb http://deb.debian.org/debian stretch-backports main
-```
+Mosh is available in Debian’s backports repositories. You’ll need to add
+stretch-backports to your sources.list, update your package information, then
+install from the backports repository. Here’s how:
 
-Run `apt-get update`:
+1. Edit `/etc/apt/sources.list` and add the following line:
 
-```
-sudo apt-get update
-```
+    ```shell
+    deb http://deb.debian.org/debian stretch-backports main
+    ```
 
-Install mosh from stretch-backports:
+2. Run `sudo apt-get update`:
 
-```
-sudo apt-get -t stretch-backports install "mosh"
-```
+3. Install mosh from stretch-backports:
+
+    ```shell
+    sudo apt-get -t stretch-backports install "mosh"
+    ```
 
 Mosh is now installed on your server.
 
 ## Harden SSH Access
 
-By default, password authentication is used to connect to your server via SSH. A cryptographic key-pair is more secure because a private key takes the place of a password, which is generally much more difficult to brute-force.
+https://www.linode.com/docs/security/securing-your-server/#harden-ssh-access
+
+By default, password authentication is used to connect to your server via SSH. A
+cryptographic key-pair is more secure because a private key takes the place of a
+password, which is generally much more difficult to brute-force.
 
 ### Create an Authentication Key-pair#
 
-1. This is done on your local computer, **not** your server, and will create a 4096-bit RSA key-pair. 
+1. This is done on your local computer, **not** your server, and will create a
+   4096-bit RSA key-pair.
 
-```
-ssh-keygen -m pem -t rsa -b 4096 -C "stefan@frede.info"
-```
+    **Linux/OSX**
 
-Press **Enter** to use the default names `id_rsa` and `id_rsa.pub` in `/home/stefanfrede/.ssh` before entering your passphrase.
+    ```shell
+    ssh-keygen -m pem -t rsa -b 4096 -C "stefan@frede.info"
+    ```
 
-2. Upload the public key to your server. Replace `0.0.0.0` with your server’s IP address.
+    Press **Enter** to use the default names `id_rsa` and `id_rsa.pub` in
+    `/home/stefanfrede/.ssh` before entering your passphrase.
 
-#### Linux
+2. Upload the public key to your server. Replace `0.0.0.0` with your server’s IP
+   address.
 
-```
-ssh-copy-id stefanfrede@0.0.0.0
-```
+    **Linux**
 
-#### OSX
+    ```shell
+    ssh-copy-id stefanfrede@0.0.0.0
+    ```
 
-On your server (while signed in as your limited user):
+    **OSX**
 
-```
-mkdir -p /home/stefanfrede/.ssh && sudo chmod -R 700 /home/stefanfrede/.ssh/
-```
+    On your server (while signed in as `stefanfrede`):
 
-From your local computer:
+    ```shell
+    mkdir -p /home/stefanfrede/.ssh && sudo chmod -R 700 /home/stefanfrede/.ssh/
+    ```
 
-```
-scp ~/.ssh/id_rsa.pub stefanfrede@0.0.0.0:~/.ssh/authorized_keys
-```
+    From your local computer:
 
-Finally, you’ll want to set permissions for the public key directory and the key file itself:
+    ```shell
+    scp ~/.ssh/id_rsa.pub stefanfrede@0.0.0.0:~/.ssh/authorized_keys
+    ```
 
-```
-sudo chmod -R 700 /home/stefanfrede/.ssh && chmod 600 /home/stefanfrede/.ssh/authorized_keys
-```
+3. Secure the public key directory and the key file itself on you server:
 
-These commands provide an extra layer of security by preventing other users from accessing the public key directory as well as the file itself.
+    ```shell
+    sudo chmod -R 700 /home/stefanfrede/.ssh && chmod 600 /home/stefanfrede/.ssh/authorized_keys
+    ```
+
+    These commands provide an extra layer of security by preventing other users from accessing the public key directory as well as the file itself.
 
 ## SSH Daemon Options
 
-**Disallow root logins over SSH.** This requires all SSH connections be by non-root users. Once a limited user account is connected, administrative privileges are accessible either by using `sudo` or changing to a root shell using `su -`.
+https://www.linode.com/docs/security/securing-your-server/#ssh-daemon-options
 
-```
-# /etc/ssh/sshd_config
+1. **Disallow root logins over SSH.** This requires all SSH connections be by
+   non-root users. Once a limited user account is connected, administrative
+   privileges are accessible either by using `sudo` or changing to a root shell
+   using `su -`.
+
+    */etc/ssh/sshd_config*
+
+    ```shell
 # Authentication:
-...
-PermitRootLogin no
-```
+    ...
+    PermitRootLogin no
+    ```
 
-**Disable SSH password authentication.** This requires all users connecting via SSH to use key authentication. Depending on the Linux distribution, the line `PasswordAuthentication` may need to be added, or uncommented by removing the leading `#`.
+2. **Disable SSH password authentication.** This requires all users connecting
+   via SSH to use key authentication. Depending on the Linux distribution, the
+   line `PasswordAuthentication` may need to be added, or uncommented by
+   removing the leading `#`.
 
-```
-# /etc/ssh/sshd_config
-# Change to no to disable tunnelled clear text passwords
-PasswordAuthentication no
-```
+    */etc/ssh/sshd_config*
 
-Restart the SSH service to load the new configuration.
+    ```shell
+    # Change to no to disable tunnelled clear text passwords
+    PasswordAuthentication no
+    ```
 
-```
-sudo systemctl restart sshd
-```
+3. Restart the SSH service to load the new configuration.
+
+    ```shell
+    sudo systemctl restart sshd
+    ```
 
 ## Networking Configuration
 
+https://www.linode.com/docs/networking/vpn/set-up-a-hardened-openvpn-server/
+
 ### IPv4 Firewall Rules
 
-Switch to the root user:
+1. Switch to the root user:
 
-```
-sudo su -
-```
+    ```shell
+    sudo su -
+    ```
 
-Update the system:
+2. Update the system:
 
-```
-apt update && apt upgrade
-```
+    ```shell
+    apt update && apt upgrade -y
+    ```
 
-Flush any pre-existing rules and non-standard chains which may be in the system:
+3. Flush any pre-existing rules and non-standard chains which may be in the system:
 
-```
-iptables -F && iptables -X
-```
+    ```shell
+    iptables -F && iptables -X
+    ```
 
-Install `iptables-persistent` so any iptables rules we make now will be restored on succeeding bootups. When asked if you want to save the current IPv4 and IPv6 rules, choose **No** for both protocols.
+4. Install `iptables-persistent` so any iptables rules we make now will be
+   restored on succeeding bootups. When asked if you want to save the current
+   IPv4 and IPv6 rules, choose **No** for both protocols.
 
-```
-apt install iptables-persistent
-```
+    ```shell
+    apt install iptables-persistent
+    ```
 
-Add IPv4 rules: `iptables-persistent` stores its rulesets in the files `/etc/iptables/rules.v4` and `/etc/iptables/rules.v6`. Open the `rules.v4` file and replace everything in it with the information below:
+5. Add IPv4 rules: `iptables-persistent` stores its rulesets in the files
+   `/etc/iptables/rules.v4` and `/etc/iptables/rules.v6`. Open the `rules.v4`
+   file and replace everything in it with the information below:
 
-```
-# /etc/iptables/rules.v4
+    */etc/iptables/rules.v4*
 
-# Allow all loopback (lo) traffic and reject anything
-# to localhost that does not originate from lo.
--A INPUT -i lo -j ACCEPT
--A INPUT ! -i lo -s 127.0.0.0/8 -j REJECT
--A OUTPUT -o lo -j ACCEPT
+    ```shell
+    # Allow all loopback (lo) traffic and reject anything
+    # to localhost that does not originate from lo.
+    -A INPUT -i lo -j ACCEPT
+    -A INPUT ! -i lo -s 127.0.0.0/8 -j REJECT
+    -A OUTPUT -o lo -j ACCEPT
 
-# Allow ping and ICMP error returns.
--A INPUT -p icmp -m state --state NEW --icmp-type 8 -j ACCEPT
--A INPUT -p icmp -m state --state ESTABLISHED,RELATED -j ACCEPT
--A OUTPUT -p icmp -j ACCEPT
+    # Allow ping and ICMP error returns.
+    -A INPUT -p icmp -m state --state NEW --icmp-type 8 -j ACCEPT
+    -A INPUT -p icmp -m state --state ESTABLISHED,RELATED -j ACCEPT
+    -A OUTPUT -p icmp -j ACCEPT
 
-# Allow incoming SSH.
--A INPUT -i eth0 -p tcp -m state --state NEW,ESTABLISHED --dport 22 -j ACCEPT
--A OUTPUT -o eth0 -p tcp -m state --state ESTABLISHED --sport 22 -j ACCEPT
+    # Allow incoming SSH.
+    -A INPUT -i eth0 -p tcp -m state --state NEW,ESTABLISHED --dport 22 -j ACCEPT
+    -A OUTPUT -o eth0 -p tcp -m state --state ESTABLISHED --sport 22 -j ACCEPT
 
-# Allow outgoing SSH.
--A OUTPUT -o eth0 -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
--A INPUT -i eth0 -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
+    # Allow outgoing SSH.
+    -A OUTPUT -o eth0 -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+    -A INPUT -i eth0 -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
 
-# Allow incoming Mosh.
--A INPUT -i eth0 -p udp -m state --state NEW,ESTABLISHED -m multiport --dport 60000:61000 -j ACCEPT
--A OUTPUT -o eth0 -p udp -m state --state ESTABLISHED  -m multiport --sport 60000:61000 -j ACCEPT
+    # Allow incoming Mosh.
+    -A INPUT -i eth0 -p udp -m state --state NEW,ESTABLISHED -m multiport --dport 60000:61000 -j ACCEPT
+    -A OUTPUT -o eth0 -p udp -m state --state ESTABLISHED  -m multiport --sport 60000:61000 -j ACCEPT
 
-# Allow UDP traffic on port 1194.
--A INPUT -i eth0 -p udp -m state --state NEW,ESTABLISHED --dport 1194 -j ACCEPT
--A OUTPUT -o eth0 -p udp -m state --state ESTABLISHED --sport 1194 -j ACCEPT
+    # Allow UDP traffic on port 1194.
+    -A INPUT -i eth0 -p udp -m state --state NEW,ESTABLISHED --dport 1194 -j ACCEPT
+    -A OUTPUT -o eth0 -p udp -m state --state ESTABLISHED --sport 1194 -j ACCEPT
 
-# Allow DNS resolution and limited HTTP/S on eth0.
-# Necessary for updating the server and timekeeping.
--A INPUT -i eth0 -p udp -m state --state ESTABLISHED --sport 53 -j ACCEPT
--A OUTPUT -o eth0 -p udp -m state --state NEW,ESTABLISHED --dport 53 -j ACCEPT
--A INPUT -i eth0 -p tcp -m state --state ESTABLISHED --sport 80 -j ACCEPT
--A INPUT -i eth0 -p tcp -m state --state ESTABLISHED --sport 443 -j ACCEPT
--A OUTPUT -o eth0 -p tcp -m state --state NEW,ESTABLISHED --dport 80 -j ACCEPT
--A OUTPUT -o eth0 -p tcp -m state --state NEW,ESTABLISHED --dport 443 -j ACCEPT
+    # Allow DNS resolution and limited HTTP/S on eth0.
+    # Necessary for updating the server and timekeeping.
+    -A INPUT -i eth0 -p udp -m state --state ESTABLISHED --sport 53 -j ACCEPT
+    -A OUTPUT -o eth0 -p udp -m state --state NEW,ESTABLISHED --dport 53 -j ACCEPT
+    -A INPUT -i eth0 -p tcp -m state --state ESTABLISHED --sport 80 -j ACCEPT
+    -A INPUT -i eth0 -p tcp -m state --state ESTABLISHED --sport 443 -j ACCEPT
+    -A OUTPUT -o eth0 -p tcp -m state --state NEW,ESTABLISHED --dport 80 -j ACCEPT
+    -A OUTPUT -o eth0 -p tcp -m state --state NEW,ESTABLISHED --dport 443 -j ACCEPT
 
-# Allow outgoing ip 217.86.193.108 on port 6812 on eht0 to connect with ARIGO Software GmbH > openVPN
--A OUTPUT -o eth0 -p udp -d 217.86.193.108/24 --dport 6812 -m state --state NEW,ESTABLISHED -j ACCEPT
--A INPUT -i eth0 -p udp --sport 6812 -m state --state ESTABLISHED -j ACCEPT
+    # Allow outgoing ip 217.86.193.108 on port 6812 on eht0 to connect with ARIGO Software GmbH > openVPN
+    -A OUTPUT -o eth0 -p udp -d 217.86.193.108/24 --dport 6812 -m state --state NEW,ESTABLISHED -j ACCEPT
+    -A INPUT -i eth0 -p udp --sport 6812 -m state --state ESTABLISHED -j ACCEPT
 
-# Allow outgoing port 6812 on eht0 to connect with ARIGO Software GmbH > Docker
--A OUTPUT -o eth0 -p tcp --dport 5000 -m state --state NEW,ESTABLISHED -j ACCEPT
--A INPUT -i eth0 -p tcp --sport 5000 -m state --state ESTABLISHED -j ACCEPT
+    # Allow outgoing port 6812 on eht0 to connect with ARIGO Software GmbH > Docker
+    -A OUTPUT -o eth0 -p tcp --dport 5000 -m state --state NEW,ESTABLISHED -j ACCEPT
+    -A INPUT -i eth0 -p tcp --sport 5000 -m state --state ESTABLISHED -j ACCEPT
 
-# Allow incoming port 6822 on eht0 to connect with ARIGO Software GmbH > GitLab
--A INPUT -i eth0 -p tcp -m state --state ESTABLISHED --sport 6822 -j ACCEPT
--A OUTPUT -o eth0 -p tcp -m state --state NEW,ESTABLISHED --dport 6822 -j ACCEPT
+    # Allow incoming port 6822 on eht0 to connect with ARIGO Software GmbH > GitLab
+    -A INPUT -i eth0 -p tcp -m state --state ESTABLISHED --sport 6822 -j ACCEPT
+    -A OUTPUT -o eth0 -p tcp -m state --state NEW,ESTABLISHED --dport 6822 -j ACCEPT
 
-# Allow traffic on the TUN interface so OpenVPN can communicate with eth0.
--A INPUT -i tun0 -j ACCEPT
--A OUTPUT -o tun0 -j ACCEPT
+    # Allow traffic on the TUN interface so OpenVPN can communicate with eth0.
+    -A INPUT -i tun0 -j ACCEPT
+    -A OUTPUT -o tun0 -j ACCEPT
 
-# Allow traffic on the ens3 interface to enable the server to restart.
--A INPUT -i ens3 -j ACCEPT
--A OUTPUT -o ens3 -j ACCEPT
+    # Allow traffic on the ens3 interface to enable the server to restart.
+    -A INPUT -i ens3 -j ACCEPT
+    -A OUTPUT -o ens3 -j ACCEPT
 
-# Log any packets which don't fit the rules above.
-# (optional but useful)
--A INPUT -m limit --limit 3/min -j LOG --log-prefix "iptables_INPUT_denied: " --log-level 4
--A FORWARD -m limit --limit 3/min -j LOG --log-prefix "iptables_FORWARD_denied: " --log-level 4
--A OUTPUT -m limit --limit 3/min -j LOG --log-prefix "iptables_OUTPUT_denied: " --log-level 4
+    # Log any packets which don't fit the rules above.
+    # (optional but useful)
+    -A INPUT -m limit --limit 3/min -j LOG --log-prefix "iptables_INPUT_denied: " --log-level 4
+    -A FORWARD -m limit --limit 3/min -j LOG --log-prefix "iptables_FORWARD_denied: " --log-level 4
+    -A OUTPUT -m limit --limit 3/min -j LOG --log-prefix "iptables_OUTPUT_denied: " --log-level 4
 
-# then reject them.
--A INPUT -j REJECT
--A FORWARD -j REJECT
--A OUTPUT -j REJECT
+    # then reject them.
+    -A INPUT -j REJECT
+    -A FORWARD -j REJECT
+    -A OUTPUT -j REJECT
 
-COMMIT
-# /etc/iptables/rules.v4
+    COMMIT
+    ```
 
-```
+6. You will disable IPv6 in the next section, so add an `ip6tables` ruleset to
+   reject all IPv6 traffic:
 
-You will disable IPv6 in the next section, so add an `ip6tables` ruleset to reject all IPv6 traffic:
+    ```shell
+    cat >> /etc/iptables/rules.v6 << END
+    *filter
 
-```
-cat >> /etc/iptables/rules.v6 << END
-*filter
+    -A INPUT -j REJECT
+    -A FORWARD -j REJECT
+    -A OUTPUT -j REJECT
 
--A INPUT -j REJECT
--A FORWARD -j REJECT
--A OUTPUT -j REJECT
+    COMMIT
+    END
+    ```
 
-COMMIT
-END
-```
+7. Activate the rulesets immediately and verify:
 
-Activate the rulesets immediately and verify:
+    ```shell
+    iptables-restore < /etc/iptables/rules.v4
+    ip6tables-restore < /etc/iptables/rules.v6
+    ```
 
-```
-iptables-restore < /etc/iptables/rules.v4
-ip6tables-restore < /etc/iptables/rules.v6
-```
+    You can see your loaded rules with `sudo iptables -S`.
 
-You can see your loaded rules with `sudo iptables -S`.
+8. Load the rulesets into `iptables-persistent`. Answer **Yes** when asked if
+   you want to save the current IPv4 and IPv6 rules.
 
-Load the rulesets into `iptables-persistent`. Answer **Yes** when asked if you want to save the current IPv4 and IPv6 rules.
-
-```
-dpkg-reconfigure iptables-persistent
-```
+    ```shell
+    dpkg-reconfigure iptables-persistent
+    ```
 
 ### Disable IPv6
 
-If you are exclusively using IPv4 on your VPN, IPv6 should be disabled unless you have a specific reason not to do so.
+If you are exclusively using IPv4 on your VPN, IPv6 should be disabled.
 
-Add the following kernel parameters for systemd-sysctl to set on boot:
+1. Add the following kernel parameters for `systemd-sysctl` to set on boot:
 
-```
-cat >> /etc/sysctl.d/99-sysctl.conf << END
+    ```shell
+    cat >> /etc/sysctl.d/99-sysctl.conf << END
 
-net.ipv6.conf.all.disable_ipv6 = 1
-net.ipv6.conf.default.disable_ipv6 = 1
-net.ipv6.conf.lo.disable_ipv6 = 1
-net.ipv6.conf.eth0.disable_ipv6 = 1
-END
-```
+    net.ipv6.conf.all.disable_ipv6 = 1
+    net.ipv6.conf.default.disable_ipv6 = 1
+    net.ipv6.conf.lo.disable_ipv6 = 1
+    net.ipv6.conf.eth0.disable_ipv6 = 1
+    END
+    ```
 
-Activate them immediately:
+2. Activate them immediately:
 
-```
-sysctl -p
-```
+    ```shell
+    sysctl -p
+    ```
 
-Comment out the line for IPv6 resolution over localhost in /etc/hosts:
+3. Comment out the line for IPv6 resolution over localhost in `/etc/hosts`:
 
-```
-# /etc/hosts
+    */etc/hosts*
 
-# The following lines are desirable for IPv6 capable hosts
-# ::1 ip6-localhost ip6-loopback
-# fe00::0 ip6-localnet
-# ff00::0 ip6-mcastprefix
-# ff02::1 ip6-allnodes
-# ff02::2 ip6-allrouters
-# ff02::3 ip6-allhosts
-```
+    ```shell
+    # The following lines are desirable for IPv6 capable hosts
+    # ::1 ip6-localhost ip6-loopback
+    # fe00::0 ip6-localnet
+    # ff00::0 ip6-mcastprefix
+    # ff02::1 ip6-allnodes
+    # ff02::2 ip6-allrouters
+    # ff02::3 ip6-allhosts
+    ```
 
 ## Setup Fail2ban
 
-### Update the system
-
-```
-sudo su -
-apt update && apt upgrade -y
-shutdown -r now
-```
-
-After the system boots up, log back in and switch to root:
-
-```
-sudo su -
-```
+https://www.linode.com/docs/security/using-fail2ban-for-security/
 
 ### Install fail2ban
 
-Use `apt` to install the stable version of Fail2ban:
+1. Ensure your system is up to date:
 
-```
-apt install fail2ban -y
-```
+    ```shell
+    apt-get update && apt-get upgrade -y
+    ```
 
-After the installation, the Fail2ban service will start automatically. You can use the following command to show its status:
+2. Install Fail2ban:
 
-```
-service fail2ban status
-```
+    ```
+    apt install fail2ban -y
+    ```
 
-The default Fail2ban filter settings will be stored in both the `/etc/fail2ban/jail.conf` file and the `/etc/fail2ban/jail.d/defaults-debian.conf` file. Remember that settings in the latter file will override corresponding settings in the former one.
+    The service will automatically start. You can use the following command to
+    show its status:
 
-Use the following commands to view more details:
+    ```
+    service fail2ban status
+    ```
 
-```
-cat /etc/fail2ban/jail.conf | less
-cat /etc/fail2ban/jail.d/defaults-debian.conf
-fail2ban-client status
-fail2ban-client status sshd
-```
+    The default Fail2ban filter settings will be stored in both the
+    `/etc/fail2ban/jail.conf` file and the
+    `/etc/fail2ban/jail.d/defaults-debian.conf` file. Remember that settings in
+    the latter file will override corresponding settings in the former one.
+
+    Use the following commands to view more details:
+
+    ```
+    cat /etc/fail2ban/jail.conf | less
+    cat /etc/fail2ban/jail.d/defaults-debian.conf
+    fail2ban-client status
+    fail2ban-client status sshd
+    ```
 
 ### Configure fail2ban
 
-Since the contents in the two config files above might change in future system updates, you should create a local config file to store your own fail2ban filter rules. Again, the settings in this file will override corresponding settings in the two files mentioned above.
+1. Since the contents in the two config files above might change in future
+   system updates, you should create a local config file to store your own
+   fail2ban filter rules. Again, the settings in this file will override
+   corresponding settings in the two files mentioned above.
 
-```
-vim /etc/fail2ban/jail.d/jail-debian.local
-```
+    ```
+    vim /etc/fail2ban/jail.d/jail-debian.local
+    ```
 
-Input the following lines:
+2. Input the following lines:
 
-```
-[sshd]
-maxentry = 3
-```
+    ```
+    [sshd]
+    maxentry = 3
+    ```
 
-Save and quit.
+3. Save and quit.
 
-Restart the Fail2ban service in order to load the new configuration:
+4. Restart the Fail2ban service in order to load the new configuration:
 
-```
-service fail2ban restart
-```
+    ```
+    service fail2ban restart
+    ```
 

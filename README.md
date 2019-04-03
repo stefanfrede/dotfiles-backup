@@ -76,7 +76,7 @@ By default, password authentication is used to connect to your server via SSH. A
 cryptographic key-pair is more secure because a private key takes the place of a
 password, which is generally much more difficult to brute-force.
 
-### Create an Authentication Key-pair#
+### Create an Authentication Key-pair
 
 1. This is done on your local computer, **not** your server, and will create a
    4096-bit RSA key-pair.
@@ -133,7 +133,7 @@ https://www.linode.com/docs/security/securing-your-server/#ssh-daemon-options
     */etc/ssh/sshd_config*
 
     ```shell
-# Authentication:
+    # Authentication:
     ...
     PermitRootLogin no
     ```

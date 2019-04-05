@@ -5,13 +5,16 @@ repos=(
   airblade/vim-gitgutter
   cakebaker/scss-syntax.vim
   editorconfig/editorconfig-vim
+  edkolev/tmuxline.vim
   elzr/vim-json
   hail2u/vim-css3-syntax
+  itchyny/lightline.vim
   janko-m/vim-test
   jonsmithers/vim-html-template-literals
   junegunn/fzf.vim
   kassio/neoterm
   Lokaltog/vim-easymotion
+  maximbaz/lightline-ale
   othree/html5.vim
   othree/jspc.vim
   pangloss/vim-javascript
@@ -21,8 +24,6 @@ repos=(
   tpope/vim-repeat
   tpope/vim-surround
   tpope/vim-unimpaired
-  vim-airline/vim-airline
-  vim-airline/vim-airline-themes
   vim-scripts/tComment
   w0rp/ale
   Yggdroot/indentLine

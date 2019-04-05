@@ -8,12 +8,6 @@ let mapleader = ','
 nmap <C-n> :bnext<CR>
 nmap <C-p> :bprev<CR>
 
-" Close the current buffer
-map <leader>bd :Bclose<cr>:tabclose<cr>gT
-
-" Close all the buffers
-map <leader>ba :bufdo bd<cr>
-
 " Comment/un-comment like Sublime
 nnoremap <C-\> :TComment<CR>
 vnoremap <C-\> :TComment<CR>
@@ -25,6 +19,9 @@ xnoremap > >gv
 " Use the space key to toggle folds
 nnoremap <space> za
 vnoremap <space> zf
+
+" Clear highlight
+map <leader>cs :let @/=''<cr>
 
 " Super fast window movement shortcuts
 nmap <C-j> <C-W>j
@@ -47,23 +44,11 @@ map <leader>sp [s
 map <leader>sa zg
 map <leader>s? z=
 
-" Switch between the last two files
-nnoremap <Leader><Leader> <C-^>
-
 " Get off my lawn
 nnoremap <Left> :echoe "Use h"<CR>
 nnoremap <Right> :echoe "Use l"<CR>
 nnoremap <Up> :echoe "Use k"<CR>
 nnoremap <Down> :echoe "Use j"<CR>
-
-" Clear search
-map <leader>cs :let @/=''<cr>
-
-" Clear whitespace
-nnoremap <leader>cw   mz:%s/\s\+$//<cr>:let @/=''<cr>`z`
-
-" Remove the Windows ^M - when the encodings gets messed up
-noremap <Leader>cm mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
 " ----------------------------------------------------------------------------
 " OPTIONS
@@ -81,7 +66,7 @@ set colorcolumn=+1              " Make it obvious where 80 characters is
 set commentstring=\ \ #%s       " When folds are created, add them to this
 set complete+=kspell            " Autocomplete with dictionary words when spell check is on
 set copyindent                  " Make autoindent use the same chars as prev line
-" set cursorline                  " Highlight the current line
+set cursorline                  " Highlight the current line
 set directory-=.                " Don't store temp files in cwd
 set encoding=utf8               " UTF-8 by default
 set expandtab                   " No tabs
@@ -119,7 +104,6 @@ set nowritebackup               " No backups made while editing
 set number
 set numberwidth=5
 set ruler                       " Show row/col and percentage
-set scroll=4                    " Number of lines to scroll with ^U/^D
 set scrolloff=3                 " Keep cursor away from this many chars top/bot
 set sessionoptions-=options     " Don't save runtimepath in Vim session (see tpope/vim-pathogen docs)
 set shiftround                  " Shift to certain columns, not just n spaces
@@ -138,14 +122,28 @@ set splitbelow                  " Open new split panes to bottom
 set splitright                  " Open new split panes to right
 set tabstop=2                   " The One True Tab
 set textwidth=80                " 80 is the new 80
+set thesaurus+=~/.vim/mthes10/mthesaur.txt
 set ttyfast                     " Rendering
 set whichwrap+=<,>,h,l          " Configure backspace so it acts as it should act
 set wildmenu                    " Show possible completions on command line
 set wildmode=list:longest,full  " List all options and complete
-set wrap                        " Wrap lines
 
 " Essential for filetype plugins.
 filetype plugin indent on
+
+" OmniCompletion
+set omnifunc=syntaxcomplete#Complete
+
+" Close scratch window on finishing a complete or leaving insert
+autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+
+" ----------------------------------------------------------------------------
+" CUSTOM COMMANDS AND FUNCTIONS
+" ----------------------------------------------------------------------------
+
+" Trim spaces at EOL and retab.
+command! TEOL %s/\s\+$//
+command! CLEAN retab | TEOL
 
 " ----------------------------------------------------------------------------
 " PLUGIN SETTINGS
@@ -154,9 +152,110 @@ filetype plugin indent on
 " For any plugins that use this, make their keymappings use comma
 let maplocalleader = ","
 
-" airline
-let g:airline_theme='solarized'
-let g:airline_powerline_fonts=1
+augroup vimrcEx
+  autocmd!
+
+  " When editing a file, always jump to the last known cursor position.
+  " Don't do it for commit messages, when the position is invalid, or when
+  " inside an event handler (happens when dropping a file on gvim).
+  autocmd BufReadPost *
+    \ if &ft != 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") |
+    \   exe "normal g`\"" |
+    \ endif
+
+  " Set syntax highlighting for specific file types
+  autocmd BufRead,BufNewFile *.md set filetype=markdown
+  autocmd BufRead,BufNewFile .{jscs,jshint,eslint}rc set filetype=json
+augroup END
+
+" Load matchit.vim, but only if the user hasn't installed a newer version.
+if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
+  runtime! macros/matchit.vim
+endif
+
+" Tab completion will insert tab at beginning of line, will use completion if
+" not at beginning
+function! InsertTabWrapper()
+  let col = col('.') - 1
+  if !col || getline('.')[col - 1] !~ '\k'
+    return "\<Tab>"
+  else
+    return "\<C-p>"
+  endif
+endfunction
+inoremap <Tab> <C-r>=InsertTabWrapper()<CR>
+inoremap <S-Tab> <C-n>
+
+if executable('rg')
+  " Use Ripgrep over Grep
+  set grepprg=rg\ --vimgrep\ --no-heading
+  set grepformat=%f:%l:%c:%m,%f:%l:%m
+endif
+
+" ALE linting events
+augroup ale
+  autocmd!
+
+  autocmd VimEnter *
+    \ set updatetime=1000 |
+    \ let g:ale_lint_on_text_changed = 0
+  autocmd CursorHold * call ale#Queue(0)
+  autocmd CursorHoldI * call ale#Queue(0)
+  autocmd InsertEnter * call ale#Queue(0)
+  autocmd InsertLeave * call ale#Queue(0)
+augroup END
+
+" Move between linting errors
+nnoremap ]r :ALENextWrap<CR>
+nnoremap [r :ALEPreviousWrap<CR>
+
+" Fix lintint errors
+nmap <Leader>f <Plug>(ale_fix)
+
+" Allow custom tags
+let g:ale_html_tidy_options = ["--custom-tags true"]
+
+" Fix files automatically on save
+let g:ale_fix_on_save = 1
+
+let g:ale_linters = {
+  \ 'javascript': [
+  \   'eslint'
+  \ ],
+  \ 'css': [
+  \   'stylelint'
+  \ ],
+  \ 'less': [
+  \   'stylelint'
+  \ ],
+  \ 'sass': [
+  \   'stylelint'
+  \ ],
+  \ 'scss': [
+  \   'stylelint'
+  \ ] }
+
+let g:ale_fixers = {
+  \ 'javascript': [
+  \   'prettier',
+  \   'eslint'
+  \ ],
+  \ 'css': [
+  \   'prettier',
+  \   'stylelint'
+  \ ],
+  \ 'less': [
+  \   'prettier',
+  \   'stylelint'
+  \ ],
+  \ 'sass': [
+  \   'prettier',
+  \   'stylelint'
+  \ ],
+  \ 'scss': [
+  \   'prettier',
+  \   'stylelint'
+  \ ] }
 
 " FZF (replaces Ctrl-P, FuzzyFinder and Command-T)
 source /usr/share/doc/fzf/examples/fzf.vim
@@ -192,36 +291,93 @@ let g:fzf_colors =
   \ 'spinner': ['fg', 'Label'],
   \ 'header':  ['fg', 'Comment'] }
 
-" ALE linting events
-augroup ale
-  autocmd!
+" indentLine
+let g:vim_json_syntax_conceal = 0
 
-  autocmd VimEnter *
-        \ set updatetime=1000 |
-        \ let g:ale_lint_on_text_changed = 0
-  autocmd CursorHold * call ale#Queue(0)
-  autocmd CursorHoldI * call ale#Queue(0)
-  autocmd InsertEnter * call ale#Queue(0)
-  autocmd InsertLeave * call ale#Queue(0)
-augroup END
+" editorconfig-vim
+" Ensure that this plugin works well with Tim Pope's fugitive
+let g:EditorConfig_exclude_patterns = ['fugitive://.*']
 
-" Move between linting errors
-nnoremap ]r :ALENextWrap<CR>
-nnoremap [r :ALEPreviousWrap<CR>
+" Avoid loading EditorConfig for any remote files over ssh
+let g:EditorConfig_exclude_patterns = ['scp://.*']
 
-" Tab completion
-" will insert tab at beginning of line,
-" will use completion if not at beginning
-function! InsertTabWrapper()
-  let col = col('.') - 1
-  if !col || getline('.')[col - 1] !~ '\k'
-    return "\<Tab>"
-  else
-    return "\<C-p>"
-  endif
+" vim-html-template-literals
+let g:html_indent_style1 = 'inc'
+
+" vim-javascript
+let g:javascript_plugin_flow = 1
+
+" tern_for_vim
+let g:tern_show_argument_hints = 'on_hold'
+let g:tern_show_signature_in_pum = 1
+
+" vim-test
+" make test commands execute using neoterm
+" let test#strategy = "neoterm"
+
+" run tests automatically on save
+" augroup test
+"   autocmd!
+"   autocmd BufWrite * if test#exists() |
+"     \   TestFile |
+"     \ endif
+" augroup END
+
+" Lightline
+let g:lightline = {
+    \ 'colorscheme': 'solarized',
+    \ 'active': {
+    \   'left':  [[ 'mode', 'paste' ],
+    \             [ 'gitbranch', 'readonly', 'filename', 'modified' ]],
+    \   'right': [['lineinfo'], ['percent'],
+    \             ['readonly', 'linter_warnings', 'linter_errors', 'linter_ok']]
+    \ },
+    \ 'component_function': {
+    \   'gitbranch': 'fugitive#head'
+    \ },
+    \ 'component_expand': {
+    \   'linter_warnings': 'LightlineLinterWarnings',
+    \   'linter_errors': 'LightlineLinterErrors',
+    \   'linter_ok': 'LightlineLinterOK'
+    \ },
+    \ 'component_type': {
+    \   'readonly': 'error',
+    \   'linter_warnings': 'warning',
+    \   'linter_errors': 'error'
+    \ },
+    \ }
+
+function! LightlineLinterWarnings() abort
+  let l:counts = ale#statusline#Count(bufnr(''))
+  let l:all_errors = l:counts.error + l:counts.style_error
+  let l:all_non_errors = l:counts.total - l:all_errors
+  return l:counts.total == 0 ? '' : printf('%d ◆', all_non_errors)
 endfunction
-inoremap <Tab> <C-r>=InsertTabWrapper()<CR>
-inoremap <S-Tab> <C-n>
+
+function! LightlineLinterErrors() abort
+  let l:counts = ale#statusline#Count(bufnr(''))
+  let l:all_errors = l:counts.error + l:counts.style_error
+  let l:all_non_errors = l:counts.total - l:all_errors
+  return l:counts.total == 0 ? '' : printf('%d ✗', all_errors)
+endfunction
+
+function! LightlineLinterOK() abort
+  let l:counts = ale#statusline#Count(bufnr(''))
+  let l:all_errors = l:counts.error + l:counts.style_error
+  let l:all_non_errors = l:counts.total - l:all_errors
+  return l:counts.total == 0 ? '✓ ' : ''
+endfunction
+
+" Tmuxline
+let g:tmuxline_powerline_separators = 0
+
+let g:tmuxline_preset = {
+    \'a'    : '#S',
+    \'win'  : ['#I', '#W'],
+    \'cwin' : ['#I', '#W', '#F'],
+    \'z'    : '#H',
+    \'options' : {'status-justify' : 'left'}
+    \ }
 
 " ----------------------------------------------------------------------------
 " COLORS
@@ -243,28 +399,3 @@ set t_Co=256
 if $TMUX != ""
   set t_ut=
 endif
-
-if executable('rg')
-  " Use Ripgrep over Grep
-  set grepprg=rg\ --vimgrep\ --no-heading
-  set grepformat=%f:%l:%c:%m,%f:%l:%m
-
-  let g:ackprg = 'rg --vimgrep --no-heading'
-endif
-
-augroup vimrcEx
-  autocmd!
-
-  " When editing a file, always jump to the last known cursor position.
-  " Don't do it for commit messages, when the position is invalid, or when
-  " inside an event handler (happens when dropping a file on gvim).
-  autocmd BufReadPost *
-    \ if &ft != 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") |
-    \   exe "normal g`\"" |
-    \ endif
-
-  " Set syntax highlighting for specific file types
-  autocmd BufRead,BufNewFile *.md set filetype=markdown
-  autocmd BufRead,BufNewFile .{jscs,jshint,eslint}rc set filetype=json
-augroup END
-

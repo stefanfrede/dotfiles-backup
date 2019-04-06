@@ -7,6 +7,13 @@ let mapleader = ','
 " Useful macros
 nmap \W mt:Goyo<CR>'tzz
 
+" Turn off linewise keys. Normally, the `j' and `k' keys move the cursor down
+" one entire line. with line wrapping on, this can cause the cursor to actually
+" skip a few lines on the screen because it's moving from line N to line N+1 in
+" the file. I want this to act more visually.
+nmap j gj
+nmap k gk
+
 " Move between open buffers.
 nmap <C-n> :bnext<CR>
 nmap <C-p> :bprev<CR>

@@ -12,6 +12,8 @@ repos=(
   janko-m/vim-test
   jonsmithers/vim-html-template-literals
   junegunn/fzf.vim
+  junegunn/goyo.vim
+  junegunn/limelight.vim
   kassio/neoterm
   Lokaltog/vim-easymotion
   maximbaz/lightline-ale

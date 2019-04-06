@@ -10,6 +10,8 @@ if not functions -q fisher
   fish -c fisher
 end
 
+source ~/.config/fish/aliases.fish
+
 # Set vim as editor
 set -U EDITOR vim
 

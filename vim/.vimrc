@@ -4,6 +4,16 @@
 
 let mapleader = ','
 
+" Useful macros
+nmap \W mt:Goyo<CR>'tzz
+
+" Turn off linewise keys. Normally, the `j' and `k' keys move the cursor down
+" one entire line. with line wrapping on, this can cause the cursor to actually
+" skip a few lines on the screen because it's moving from line N to line N+1 in
+" the file. I want this to act more visually.
+nmap j gj
+nmap k gk
+
 " Move between open buffers.
 nmap <C-n> :bnext<CR>
 nmap <C-p> :bprev<CR>
@@ -379,6 +389,30 @@ let g:tmuxline_preset = {
     \'options' : {'status-justify' : 'left'}
     \ }
 
+" Goyo
+
+let g:limelight_conceal_ctermfg = 245
+
+function! s:goyo_enter()
+  silent !tmux set status off
+  silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
+  set noshowcmd
+  set scrolloff=999
+  Limelight
+endfunction
+
+function! s:goyo_leave()
+  silent !tmux set status on
+  silent !tmux list-panes -F '\#F' | grep -q Z && tmux
+  resize-pane -Z
+  set showcmd
+  set scrolloff=3
+  Limelight!
+endfunction
+
+autocmd! User GoyoEnter nested call <SID>goyo_enter()
+autocmd! User GoyoLeave nested call <SID>goyo_leave()
+
 " ----------------------------------------------------------------------------
 " COLORS
 " ----------------------------------------------------------------------------
@@ -391,7 +425,6 @@ syntax enable
 set background=light
 colorscheme solarized
 
-let g:solarized_termcolors = 256
 set t_Co=256
 
 " Disable Background Color Erase when within tmux -

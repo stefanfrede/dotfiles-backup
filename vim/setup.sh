@@ -12,6 +12,8 @@ repos=(
   janko-m/vim-test
   jonsmithers/vim-html-template-literals
   junegunn/fzf.vim
+  junegunn/goyo.vim
+  junegunn/limelight.vim
   kassio/neoterm
   Lokaltog/vim-easymotion
   maximbaz/lightline-ale
@@ -70,5 +72,10 @@ for repo in ${repos[@]}; do
   ) &
 done
 wait
+
+find . -name "ftplugin" | while read fn; do
+  fn=$(basename $fn)
+  symlink "$HOME/.vim/$fn" "$SOURCE/$fn"
+done
 
 success "Finished setting up Vim."

@@ -397,3 +397,126 @@ https://www.linode.com/docs/security/using-fail2ban-for-security/
     service fail2ban restart
     ```
 
+## Setup Docker
+
+### Install Docker
+
+1. Update the system:
+
+    ```shell
+    apt update && apt upgrade -y
+    ```
+
+2. Install the dependencies necessary to add a new repository over HTTPS:
+
+    ```shell
+    sudo apt install apt-transport-https ca-certificates curl software-properties-common gnupg2
+    ```
+
+3. Then add the GPG key for the official Docker repository to your system:
+
+    ```shell
+    curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+    ```
+
+    Add the Docker APT repository to your system’s software repository list by
+    typing:
+
+    ```shell
+    sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
+    ```
+
+4. Next, update the package database with the Docker packages from the newly
+   added repo:
+
+    ```shell
+    sudo apt update
+    ```
+
+    Make sure you are about to install from the Docker repo instead of the
+    default Debian repo:
+
+    ```shell
+    apt-cache policy docker-ce
+    ```
+
+    You'll see output like this, although the version number for Docker may be
+    different:
+
+    ```shell
+    docker-ce:
+      Installed: (none)
+      Candidate: 18.06.1~ce~3-0~debian
+      Version table:
+        18.06.1~ce~3-0~debian 500
+          500 https://download.docker.com/linux/debian stretch/stable amd64 Packages
+    ```
+
+    Notice that `docker-ce` is not installed, but the candidate for installation
+    is from the Docker repository for Debian 9 (`stretch`).
+
+5. Finally, install Docker:
+
+    ```shell
+    sudo apt install docker-ce
+    ```
+
+    Docker should now be installed, the daemon started, and the process enabled
+    to start on boot. Check that it's running:
+
+    ```shell
+    sudo systemctl status docker
+    ```
+
+    The output should be similar to the following, showing that the service is
+    active and running:
+
+    ```shell
+    ●   docker.service - Docker Application Container Engine
+          Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: enabled)
+          Active: active (running) since Thu 2018-07-05 15:08:39 UTC; 2min 55s ago
+            Docs: https://docs.docker.com
+        Main PID: 21319 (dockerd)
+          CGroup: /system.slice/docker.service
+                  ├─21319 /usr/bin/dockerd -H fd://
+                  └─21326 docker-containerd --config /var/run/docker/containerd/containerd.toml
+    ```
+
+    Installing Docker now gives you not just the Docker service (daemon) but
+    also the docker command line utility, or the Docker client. 
+
+### Install Docker Compose
+
+Although we can install Docker Compose from the official Debian repositories, it
+is several minor versions behind the latest release, so we'll install it from
+Docker's GitHub repository. The command below is slightly different than the one
+you'll find on the [Releases](https://github.com/docker/compose/releases) page.
+By using the `-o` flag to specify the output file first rather than redirecting
+the output, this syntax avoids running into a permission denied error caused
+when using `sudo`.
+
+1. We'll check the [current release](https://github.com/docker/compose/releases)
+   and, if necessary, update it in the command below:
+
+    ```shell
+   sudo curl -L https://github.com/docker/compose/releases/download/1.24.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose 
+    ```
+
+2. Next we'll set the permissions:
+
+    ```shell
+    sudo chmod +x /usr/local/bin/docker-compose
+    ```
+
+3. Then we'll verify that the installation was successful by checking the
+   version:
+
+    ```shell
+    docker-compose --version
+    ```
+
+    This will print out the version we installed:
+
+    ```shell
+    docker-compose version 1.24.0, build f46880fe
+    ```

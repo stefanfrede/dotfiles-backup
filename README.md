@@ -244,6 +244,17 @@ https://www.linode.com/docs/security/securing-your-server/#ssh-daemon-options
     Installing Docker now gives you not just the Docker service (daemon) but
     also the docker command line utility, or the Docker client. 
 
+6. Prevent Docker from manipulating `iptables`.
+
+    To prevent Docker from manipulating the `iptables` policies at all, set the
+    `iptables` key to `false` in `/etc/docker/daemon.json`.
+
+    ```shell
+    {
+      "iptables": false
+    }
+    ```
+
 ### Install Docker Compose
 
 Although we can install Docker Compose from the official Debian repositories, it

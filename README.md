@@ -195,6 +195,8 @@ https://www.linode.com/docs/networking/vpn/set-up-a-hardened-openvpn-server/
     */etc/iptables/rules.v4*
 
     ```shell
+    *filter
+
     # Allow all loopback (lo) traffic and reject anything
     # to localhost that does not originate from lo.
     -A INPUT -i lo -j ACCEPT

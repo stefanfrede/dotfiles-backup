@@ -391,14 +391,11 @@ let g:tmuxline_preset = {
 
 " Goyo
 
-let g:limelight_conceal_ctermfg = 245
-
 function! s:goyo_enter()
   silent !tmux set status off
   silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
   set noshowcmd
   set scrolloff=999
-  Limelight
 endfunction
 
 function! s:goyo_leave()
@@ -407,7 +404,6 @@ function! s:goyo_leave()
   resize-pane -Z
   set showcmd
   set scrolloff=3
-  Limelight!
 endfunction
 
 autocmd! User GoyoEnter nested call <SID>goyo_enter()

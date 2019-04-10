@@ -13,8 +13,6 @@ repos=(
   jonsmithers/vim-html-template-literals
   junegunn/fzf.vim
   junegunn/goyo.vim
-  junegunn/limelight.vim
-  kassio/neoterm
   Lokaltog/vim-easymotion
   maximbaz/lightline-ale
   othree/html5.vim

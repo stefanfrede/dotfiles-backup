@@ -242,7 +242,7 @@ https://www.linode.com/docs/security/securing-your-server/#ssh-daemon-options
     ```
 
     Installing Docker now gives you not just the Docker service (daemon) but
-    also the docker command line utility, or the Docker client. 
+    also the docker command line utility, or the Docker client.
 
 6. Prevent Docker from manipulating `iptables`.
 
@@ -269,7 +269,7 @@ when using `sudo`.
    and, if necessary, update it in the command below:
 
     ```shell
-   sudo curl -L https://github.com/docker/compose/releases/download/1.24.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose 
+   sudo curl -L https://github.com/docker/compose/releases/download/1.24.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
     ```
 
 2. Next we'll set the permissions:
@@ -330,7 +330,20 @@ https://www.linode.com/docs/networking/vpn/set-up-a-hardened-openvpn-server/
     */etc/iptables/rules.v4*
 
     ```shell
+    *nat
+    :PREROUTING ACCEPT [0:0]
+    :INPUT ACCEPT [0:0]
+    :OUTPUT ACCEPT [0:0]
+    :POSTROUTING ACCEPT [0:0]
+
+    -A POSTROUTING -s 10.8.0.0/24 -j SNAT --to 172.17.0.1
+
+    COMMIT
+
     *filter
+    :INPUT ACCEPT [0:0]
+    :FORWARD ACCEPT [0:0]
+    :OUTPUT ACCEPT [0:0]
 
     # Allow all loopback (lo) traffic and reject anything
     # to localhost that does not originate from lo.
@@ -359,30 +372,32 @@ https://www.linode.com/docs/networking/vpn/set-up-a-hardened-openvpn-server/
     -A INPUT -i eth0 -p udp -m state --state NEW,ESTABLISHED --dport 1194 -j ACCEPT
     -A OUTPUT -o eth0 -p udp -m state --state ESTABLISHED --sport 1194 -j ACCEPT
 
-    # Allow DNS resolution and limited HTTP/S on eth0.
-    # Necessary for updating the server and timekeeping.
+    # Allow DNS traffic on UDP
     -A INPUT -i eth0 -p udp -m state --state ESTABLISHED --sport 53 -j ACCEPT
     -A OUTPUT -o eth0 -p udp -m state --state NEW,ESTABLISHED --dport 53 -j ACCEPT
+
+    # Allow HTTP/S For Updates
     -A INPUT -i eth0 -p tcp -m state --state ESTABLISHED --sport 80 -j ACCEPT
     -A INPUT -i eth0 -p tcp -m state --state ESTABLISHED --sport 443 -j ACCEPT
     -A OUTPUT -o eth0 -p tcp -m state --state NEW,ESTABLISHED --dport 80 -j ACCEPT
     -A OUTPUT -o eth0 -p tcp -m state --state NEW,ESTABLISHED --dport 443 -j ACCEPT
 
-    # Allow outgoing ip 217.86.193.108 on port 6812 on eth0 to connect with ARIGO Software GmbH > openVPN
-    -A OUTPUT -o eth0 -p udp -d 217.86.193.108/24 --dport 6812 -m state --state NEW,ESTABLISHED -j ACCEPT
-    -A INPUT -i eth0 -p udp --sport 6812 -m state --state ESTABLISHED -j ACCEPT
+    # Allow NTP traffic to sync the clock
+    -A INPUT -i eth0 -p udp -m state --state ESTABLISHED --sport 123 -j ACCEPT
+    -A OUTPUT -o eth0 -p udp -m state --state NEW,ESTABLISHED --dport 123 -j ACCEPT
 
-    # Allow outgoing port 6812 on eth0 to connect with ARIGO Software GmbH > Docker
-    -A OUTPUT -o eth0 -p tcp --dport 5000 -m state --state NEW,ESTABLISHED -j ACCEPT
-    -A INPUT -i eth0 -p tcp --sport 5000 -m state --state ESTABLISHED -j ACCEPT
-
-    # Allow incoming port 6822 on eth0 to connect with ARIGO Software GmbH > GitLab
-    -A INPUT -i eth0 -p tcp -m state --state ESTABLISHED --sport 6822 -j ACCEPT
-    -A OUTPUT -o eth0 -p tcp -m state --state NEW,ESTABLISHED --dport 6822 -j ACCEPT
+    # Allow Docker traffic
+    -A INPUT -i docker0 -p tcp -m state --state ESTABLISHED --sport 80 -m iprange --src-range 172.17.0.1-172.17.0.100 -j ACCEPT
+    -A OUTPUT -o docker0 -p tcp -m state --state NEW,ESTABLISHED --dport 80 -m iprange --src-range 172.17.0.1-172.17.0.100 -j ACCEPT
 
     # Allow traffic on the TUN interface so OpenVPN can communicate with eth0.
     -A INPUT -i tun0 -j ACCEPT
+    -A FORWARD -i tun0 -j ACCEPT
     -A OUTPUT -o tun0 -j ACCEPT
+
+    # Allow forwarding traffic only from the VPN.
+    -A FORWARD -i tun0 -o eth0 -s 10.8.0.0/24 -j ACCEPT
+    -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 
     # Allow traffic on the ens3 interface to enable the server to restart.
     -A INPUT -i ens3 -j ACCEPT
@@ -426,7 +441,15 @@ https://www.linode.com/docs/networking/vpn/set-up-a-hardened-openvpn-server/
 
     You can see your loaded rules with `sudo iptables -S`.
 
-8. Load the rulesets into `iptables-persistent`. Answer **Yes** when asked if
+8. Apply the routing rule for Docker so that traffic can leave the VPN. This
+   must be done after `iptables-restore` because that directive doesn’t take a
+   table option:
+
+    ```shell
+    iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -j SNAT --to 172.17.0.1
+    ```
+
+9. Load the rulesets into `iptables-persistent`. Answer **Yes** when asked if
    you want to save the current IPv4 and IPv6 rules.
 
     ```shell

@@ -403,6 +403,10 @@ https://www.linode.com/docs/networking/vpn/set-up-a-hardened-openvpn-server/
     -A INPUT -i ens3 -j ACCEPT
     -A OUTPUT -o ens3 -j ACCEPT
 
+    # ARIGO Software GmbH
+    -A OUTPUT -o eth0 -p tcp --dport 6822 -m state --state NEW,ESTABLISHED -j ACCEPT
+    -A INPUT -i eth0 -p tcp --sport 6822 -m state --state ESTABLISHED -j ACCEPT
+
     # Log any packets which don't fit the rules above.
     # (optional but useful)
     -A INPUT -m limit --limit 3/min -j LOG --log-prefix "iptables_INPUT_denied: " --log-level 4
@@ -441,15 +445,7 @@ https://www.linode.com/docs/networking/vpn/set-up-a-hardened-openvpn-server/
 
     You can see your loaded rules with `sudo iptables -S`.
 
-8. Apply the routing rule for Docker so that traffic can leave the VPN. This
-   must be done after `iptables-restore` because that directive doesn’t take a
-   table option:
-
-    ```shell
-    iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -j SNAT --to 172.17.0.1
-    ```
-
-9. Load the rulesets into `iptables-persistent`. Answer **Yes** when asked if
+8. Load the rulesets into `iptables-persistent`. Answer **Yes** when asked if
    you want to save the current IPv4 and IPv6 rules.
 
     ```shell

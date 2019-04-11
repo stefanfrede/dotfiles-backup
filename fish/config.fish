@@ -32,5 +32,9 @@ set -U FZF_DEFAULT_COMMAND 'rg --files --hidden --follow --glob "!.git/*"'
 # Start or re-use a gpg-agent.
 gpgconf --launch gpg-agent
 
+# Ensure that GPG Agent is used as the SSH agent
+set -e SSH_AUTH_SOCK
+set -U -x SSH_AUTH_SOCK ~/.gnupg/S.gpg-agent.ssh
+
 # Get a password prompt when signing commits
 set -x GPG_TTY (tty)

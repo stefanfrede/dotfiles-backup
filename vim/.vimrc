@@ -322,18 +322,6 @@ let g:javascript_plugin_flow = 1
 let g:tern_show_argument_hints = 'on_hold'
 let g:tern_show_signature_in_pum = 1
 
-" vim-test
-" make test commands execute using neoterm
-" let test#strategy = "neoterm"
-
-" run tests automatically on save
-" augroup test
-"   autocmd!
-"   autocmd BufWrite * if test#exists() |
-"     \   TestFile |
-"     \ endif
-" augroup END
-
 " Lightline
 let g:lightline = {
     \ 'colorscheme': 'solarized',

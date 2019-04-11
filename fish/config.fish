@@ -36,7 +36,7 @@ set -x GPG_TTY (tty)
 gpg-connect-agent updatestartuptty /bye >/dev/null
 
 # Start or re-use a gpg-agent.
-gpgconf --launch gpg-agent
+# gpgconf --launch gpg-agent
 
 # Ensure that GPG Agent is used as the SSH agent
 set -e SSH_AUTH_SOCK

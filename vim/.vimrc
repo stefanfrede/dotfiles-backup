@@ -6,6 +6,7 @@ let mapleader = ','
 
 " Useful macros
 nmap \W mt:Goyo<CR>'tzz
+nmap \q :nohlsearch<CR>
 
 " Turn off linewise keys. Normally, the `j' and `k' keys move the cursor down
 " one entire line. with line wrapping on, this can cause the cursor to actually
@@ -29,9 +30,6 @@ xnoremap > >gv
 " Use the space key to toggle folds
 nnoremap <space> za
 vnoremap <space> zf
-
-" Clear highlight
-map <leader>cs :let @/=''<cr>
 
 " Super fast window movement shortcuts
 nmap <C-j> <C-W>j

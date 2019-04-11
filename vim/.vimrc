@@ -153,6 +153,9 @@ autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
 command! TEOL %s/\s\+$//
 command! CLEAN retab | TEOL
 
+" Close all buffers except this one
+command! BufCloseOthers %bd|e#
+
 " ----------------------------------------------------------------------------
 " PLUGIN SETTINGS
 " ----------------------------------------------------------------------------

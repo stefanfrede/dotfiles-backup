@@ -1,5 +1,3 @@
-TEST COMMIT
-
 # Secure your Debian 9 server
 
 ## Add a Limited User Account

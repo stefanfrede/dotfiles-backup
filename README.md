@@ -336,7 +336,7 @@ https://www.linode.com/docs/networking/vpn/set-up-a-hardened-openvpn-server/
     :OUTPUT ACCEPT [0:0]
     :POSTROUTING ACCEPT [0:0]
 
-    -A POSTROUTING -s 10.8.0.0/24 -j SNAT --to 172.17.0.1
+    -A POSTROUTING -s 10.10.10.0/24 -j SNAT --to 172.17.0.1
 
     COMMIT
 
@@ -392,11 +392,14 @@ https://www.linode.com/docs/networking/vpn/set-up-a-hardened-openvpn-server/
 
     # Allow traffic on the TUN interface so OpenVPN can communicate with eth0.
     -A INPUT -i tun0 -j ACCEPT
+    -A INPUT -i tun1 -j ACCEPT
     -A FORWARD -i tun0 -j ACCEPT
+    -A FORWARD -i tun1 -j ACCEPT
     -A OUTPUT -o tun0 -j ACCEPT
+    -A OUTPUT -o tun1 -j ACCEPT
 
     # Allow forwarding traffic only from the VPN.
-    -A FORWARD -i tun0 -o eth0 -s 10.8.0.0/24 -j ACCEPT
+    -A FORWARD -i tun0 -o eth0 -s 10.10.10.0/24 -j ACCEPT
     -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 
     # Allow traffic on the ens3 interface to enable the server to restart.
@@ -404,8 +407,14 @@ https://www.linode.com/docs/networking/vpn/set-up-a-hardened-openvpn-server/
     -A OUTPUT -o ens3 -j ACCEPT
 
     # ARIGO Software GmbH
+    -A OUTPUT -o eth0 -p udp --dport 6812 -m state --state NEW,ESTABLISHED -j ACCEPT
+    -A INPUT -i eth0 -p udp --sport 6812 -m state --state ESTABLISHED -j ACCEPT
+
     -A OUTPUT -o eth0 -p tcp --dport 6822 -m state --state NEW,ESTABLISHED -j ACCEPT
     -A INPUT -i eth0 -p tcp --sport 6822 -m state --state ESTABLISHED -j ACCEPT
+
+    -A OUTPUT -o eth0 -p tcp --dport 5000 -m state --state NEW,ESTABLISHED -j ACCEPT
+    -A INPUT -i eth0 -p tcp --sport 5000 -m state --state ESTABLISHED -j ACCEPT
 
     # Log any packets which don't fit the rules above.
     # (optional but useful)

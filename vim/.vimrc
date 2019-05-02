@@ -52,6 +52,9 @@ map <leader>sp [s
 map <leader>sa zg
 map <leader>s? z=
 
+" Unfuck my screen
+nnoremap U :syntax sync fromstart<cr>:redraw!<cr>
+
 " Get off my lawn
 nnoremap <Left> :echoe "Use h"<CR>
 nnoremap <Right> :echoe "Use l"<CR>

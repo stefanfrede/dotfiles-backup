@@ -9,11 +9,13 @@ repos=(
   edkolev/tmuxline.vim
   elzr/vim-json
   hail2u/vim-css3-syntax
+  ianks/vim-tsx
   itchyny/lightline.vim
   janko-m/vim-test
   jonsmithers/vim-html-template-literals
   junegunn/fzf.vim
   junegunn/goyo.vim
+  leafgarland/typescript-vim
   Lokaltog/vim-easymotion
   maximbaz/lightline-ale
   othree/html5.vim

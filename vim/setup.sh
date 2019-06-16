@@ -1,6 +1,7 @@
 #! /usr/bin/env bash
 
 repos=(
+  AndrewRadev/linediff.vim
   altercation/vim-colors-solarized
   airblade/vim-gitgutter
   cakebaker/scss-syntax.vim

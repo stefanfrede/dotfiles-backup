@@ -1,16 +1,24 @@
 
 
-# 50-character subject line
+# The commit message should be structured as follows:
 #
-# 72-character wrapped longer description. This should answer:
+# <type>[optional scope]: <description>
 #
-# * Why was this change necessary?
-# * How does it address the problem?
-# * Are there any side effects?
+# [optional body]
 #
-# Include a link to the ticket, if any.
+# [optional footer]
 #
-# Add co-authors if you worked on this code with others:
+# The commit contains the following structural elements:
 #
-# Co-authored-by: Full Name <email@example.com>
-# Co-authored-by: Full Name <email@example.com>
+# 1. fix:
+#    a commit of the type fix patches a bug in the codebase
+# 2. feat:
+#    a commit of the type feat introduces a new feature to the codebase
+# 3. BREAKING CHANGE:
+#    a commit that has the text BREAKING CHANGE: at the beginning of its
+#    optional body or footer section introduces a breaking change
+# 4. The following commit types are allowed too:
+#    chore:, docs:, perf:, refactor:, style:, and test:
+#
+# For examples and more details look here:
+# https://www.conventionalcommits.org

@@ -179,7 +179,7 @@ augroup vimrcEx
 
   " Set syntax highlighting for specific file types
   autocmd BufRead,BufNewFile *.md set filetype=markdown
-  autocmd BufRead,BufNewFile .{jscs,jshint,eslint}rc set filetype=json
+  autocmd BufRead,BufNewFile .{eslint,jscs,jshint,prettier}rc set filetype=json
 augroup END
 
 " Load matchit.vim, but only if the user hasn't installed a newer version.

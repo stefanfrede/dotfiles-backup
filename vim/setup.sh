@@ -76,7 +76,7 @@ wait
 
 find . -name "ftplugin" | while read fn; do
   fn=$(basename $fn)
-  symlink "$HOME/.vim/$fn" "$SOURCE/$fn"
+  symlink "$SOURCE/$fn" "$HOME/.vim/$fn"
 done
 
 success "Finished setting up Vim."

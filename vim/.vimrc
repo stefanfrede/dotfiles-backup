@@ -193,7 +193,7 @@ augroup vimrcEx
 
   " Set syntax highlighting for specific file types
   autocmd BufRead,BufNewFile *.md set filetype=markdown
-  autocmd BufRead,BufNewFile .{eslint,jscs,jshint,prettier}rc set filetype=json
+  autocmd BufRead,BufNewFile .{eslint,lintstaged,prettier}rc set filetype=json
 augroup END
 
 " Load matchit.vim, but only if the user hasn't installed a newer version.
@@ -245,45 +245,6 @@ let g:ale_html_tidy_options = ["--custom-tags true"]
 
 " Fix files automatically on save
 let g:ale_fix_on_save = 1
-
-let g:ale_linters = {
-  \ 'javascript': [
-  \   'eslint'
-  \ ],
-  \ 'css': [
-  \   'stylelint'
-  \ ],
-  \ 'less': [
-  \   'stylelint'
-  \ ],
-  \ 'sass': [
-  \   'stylelint'
-  \ ],
-  \ 'scss': [
-  \   'stylelint'
-  \ ] }
-
-let g:ale_fixers = {
-  \ 'javascript': [
-  \   'prettier',
-  \   'eslint'
-  \ ],
-  \ 'css': [
-  \   'prettier',
-  \   'stylelint'
-  \ ],
-  \ 'less': [
-  \   'prettier',
-  \   'stylelint'
-  \ ],
-  \ 'sass': [
-  \   'prettier',
-  \   'stylelint'
-  \ ],
-  \ 'scss': [
-  \   'prettier',
-  \   'stylelint'
-  \ ] }
 
 " FZF (replaces Ctrl-P, FuzzyFinder and Command-T)
 source /usr/share/doc/fzf/examples/fzf.vim

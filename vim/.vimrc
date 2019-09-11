@@ -7,6 +7,7 @@ let mapleader = ','
 " Useful macros
 nmap \W mt:Goyo<CR>'tzz
 nmap \q :nohlsearch<CR>
+nmap \t mz:execute TabToggle()<CR>'z
 
 " Turn off linewise keys. Normally, the `j' and `k' keys move the cursor down
 " one entire line. with line wrapping on, this can cause the cursor to actually
@@ -147,6 +148,19 @@ set omnifunc=syntaxcomplete#Complete
 
 " Close scratch window on finishing a complete or leaving insert
 autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+
+" allow toggling between spaces and tabs
+function TabToggle()
+  if &expandtab
+    set shiftwidth=4
+    set softtabstop=0
+    set noexpandtab
+  else
+    set shiftwidth=2
+    set softtabstop=2
+    set expandtab
+  endif
+endfunction
 
 " ----------------------------------------------------------------------------
 " CUSTOM COMMANDS AND FUNCTIONS

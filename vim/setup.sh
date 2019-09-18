@@ -11,6 +11,7 @@ repos=(
   hail2u/vim-css3-syntax
   itchyny/lightline.vim
   janko-m/vim-test
+  jiangmiao/auto-pairs
   jonsmithers/vim-html-template-literals
   junegunn/fzf.vim
   junegunn/goyo.vim

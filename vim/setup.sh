@@ -19,7 +19,7 @@ repos=(
   maximbaz/lightline-ale
   othree/html5.vim
   othree/jspc.vim
-  pangloss/vim-javascript
+  sheerun/vim-polyglot
   ternjs/tern_for_vim
   tmux-plugins/vim-tmux-focus-events
   tpope/vim-fugitive

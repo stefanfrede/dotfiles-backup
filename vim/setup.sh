@@ -1,34 +1,48 @@
 #! /usr/bin/env bash
 
 repos=(
-  AndrewRadev/linediff.vim
+  # Appearance and Themes
   altercation/vim-colors-solarized
-  airblade/vim-gitgutter
-  cakebaker/scss-syntax.vim
-  editorconfig/editorconfig-vim
   edkolev/tmuxline.vim
+  itchyny/lightline.vim
+  maximbaz/lightline-ale
+  Yggdroot/indentLine
+  # Fuzzy search
+  junegunn/fzf
+  junegunn/fzf.vim
+  # Git
+  airblade/vim-gitgutter
+  tpope/vim-fugitive
+  # Linting and Code Formatting
+  dense-analysis/ale
+  # Testing
+  janko-m/vim-test
+  # Syntax Highlighting And Indentation
+  ap/vim-css-color
   elzr/vim-json
   hail2u/vim-css3-syntax
-  itchyny/lightline.vim
-  janko-m/vim-test
-  jiangmiao/auto-pairs
   jonsmithers/vim-html-template-literals
-  junegunn/fzf.vim
-  junegunn/goyo.vim
-  Lokaltog/vim-easymotion
-  maximbaz/lightline-ale
+  othree/csscomplete.vim
   othree/html5.vim
+  othree/yajs.vim
+  # Snippets
+  honza/vim-snippets
+  mattn/emmet-vim
+  SirVer/ultisnips
+  # Autocompletion & Intellisense
   othree/jspc.vim
-  sheerun/vim-polyglot
   ternjs/tern_for_vim
+  ajh17/VimCompletesMe
+  # Utilities
+  adelarsq/vim-matchit
+  Lokaltog/vim-easymotion
+  jiangmiao/auto-pairs
   tmux-plugins/vim-tmux-focus-events
-  tpope/vim-fugitive
+  tpope/vim-commentary
   tpope/vim-repeat
   tpope/vim-surround
   tpope/vim-unimpaired
-  vim-scripts/tComment
-  w0rp/ale
-  Yggdroot/indentLine
+  tpope/vim-vinegar
 )
 
 set -euo pipefail
@@ -46,13 +60,13 @@ dir="$HOME/.vim/pack/bundle/start"
 info "Setting up Vim..."
 
 find . -name ".vim*" | while read fn; do
-  fn=$(basename $fn)
-  symlink "$SOURCE/$fn" "$DESTINATION/$fn"
+fn=$(basename $fn)
+symlink "$SOURCE/$fn" "$DESTINATION/$fn"
 done
 
 info "Setting up Vim plugins..."
 
-if [ -e "$dir" ] || [ -h "$dir" ]; then
+if [ -e "$dir"  ] || [ -h "$dir"  ]; then
   if ! rm -r "$dir"; then
     substep_error "Failed to remove existing dir(s) at $dir."
     exit 1
@@ -66,14 +80,36 @@ for repo in ${repos[@]}; do
   dest="$dir/$plugin"
   rm -rf "$dest"
   (
-    git clone --depth=1 -q "https://github.com/$repo" "$dest"
-    rm -rf "$dest/.git"
-    echo "· Cloned $repo"
+  git clone --depth=1 -q "https://github.com/$repo" "$dest"
+  rm -rf "$dest/.git"
+  echo "· Cloned $repo"
+
   ) &
 done
 wait
 
+info "Configure fzf"
+pushd ~/.fzf
+./install --all
+wait
+popd
+
+info "Configure ternjs"
+pushd ~/.vim/pack/bundle/start/tern_for_vim/
+npm i
+wait
+popd
+npm i -g tern
+wait
+
+info "Move file type plugins"
 find . -name "ftplugin" | while read fn; do
+fn=$(basename $fn)
+symlink "$SOURCE/$fn" "$HOME/.vim/$fn"
+done
+
+info "Move UltiSnips snippets"
+find . -name "UltiSnips" | while read fn; do
   fn=$(basename $fn)
   symlink "$SOURCE/$fn" "$HOME/.vim/$fn"
 done

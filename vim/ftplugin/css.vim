@@ -1,6 +1,9 @@
 " Enable keyword completion
 setlocal iskeyword+=-
 
+" CSS Omni Complete Function for CSS3
+setlocal omnifunc=csscomplete#CompleteCSS noci
+
 " Enable linting
 let b:ale_linters = ['stylelint']
 

@@ -8,11 +8,11 @@ source ../scripts/functions.sh
 SOURCE="$(realpath .)"
 DESTINATION="$(realpath ~)"
 
-info "Configuring git..."
+info "Configuring ctags..."
 
-find . -name ".git*" | while read fn; do
+find . -name ".ctags.d" | while read fn; do
   fn=$(basename $fn)
   symlink "$SOURCE/$fn" "$DESTINATION/$fn"
 done
 
-success "Finished configuring git."
+success "Finished configuring ctags."

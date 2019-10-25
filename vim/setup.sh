@@ -24,7 +24,7 @@ repos=(
   jonsmithers/vim-html-template-literals
   othree/csscomplete.vim
   othree/html5.vim
-  othree/yajs.vim
+  pangloss/vim-javascript
   # Snippets
   honza/vim-snippets
   mattn/emmet-vim

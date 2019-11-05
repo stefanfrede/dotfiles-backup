@@ -289,9 +289,6 @@ let g:ale_html_tidy_options = ["--custom-tags true"]
 " Fix files automatically on save
 let g:ale_fix_on_save = 1
 
-" commentary.vim
-nnoremap <C-\> :Commentary<CR>
-
 " VimCompletesMe
 autocmd FileType vim let b:vcm_tab_complete = 'vim'
 " Close scratch window on finishing a complete or leaving insert

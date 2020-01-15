@@ -5,6 +5,16 @@ set -euo pipefail
 DIR=$(dirname "$0")
 cd "$DIR"
 
+# unameOut="$(uname -s)"
+# case "${unameOut}" in
+#     Linux*)     machine=Linux;;
+#     Darwin*)    machine=Mac;;
+#     CYGWIN*)    machine=Cygwin;;
+#     MINGW*)     machine=MinGw;;
+#     *)          machine="UNKNOWN:${unameOut}"
+# esac
+# echo ${machine}
+
 info "Update apt..."
 sudo apt update && sudo apt upgrade -y
 
@@ -37,32 +47,32 @@ else
   fi
 fi
 
-info "Installing node..."
-if nodejs --version >/dev/null; then
-  success "Node already installed."
-else
-  curl -sL https://deb.nodesource.com/setup_11.x -o nodesource_setup.sh
+#info "Installing node..."
+#if nodejs --version >/dev/null; then
+#  success "Node already installed."
+#else
+#  curl -sL https://deb.nodesource.com/setup_11.x -o nodesource_setup.sh
+#
+#  if sudo bash nodesource_setup.sh; then
+#    if sudo apt -qq install nodejs; then
+#      success "Node successful installed."
+#    else
+#      error "Failed to install Node."
+#      exit 1
+#    fi
+#  else
+#    error "Failed to install Node."
+#    exit 1
+#  fi
+#
+#  rm nodesource_setup.sh
+#fi
 
-  if sudo bash nodesource_setup.sh; then
-    if sudo apt -qq install nodejs; then
-      success "Node successful installed."
-    else
-      error "Failed to install Node."
-      exit 1
-    fi
-  else
-    error "Failed to install Node."
-    exit 1
-  fi
-
-  rm nodesource_setup.sh
-fi
-
-info "Update npm..."
-if npm -v >/dev/null; then
-  sudo apt -qq install build-essential
-  sudo npm i -g npm@latest
-fi
+#info "Update npm..."
+#if npm -v >/dev/null; then
+#  sudo apt -qq install build-essential
+#  sudo npm i -g npm@latest
+#fi
 
 info "Installing Tmux..."
 if tmux -V >/dev/null; then
@@ -76,33 +86,33 @@ else
   fi
 fi
 
-info "Installing ripgrep..."
-if rg --version >/dev/null; then
-  success "ripgrep already installed"
-else
-  curl -LO https://github.com/BurntSushi/ripgrep/releases/download/0.10.0/ripgrep_0.10.0_amd64.deb
+#info "Installing ripgrep..."
+#if rg --version >/dev/null; then
+#  success "ripgrep already installed"
+#else
+#  curl -LO https://github.com/BurntSushi/ripgrep/releases/download/0.10.0/ripgrep_0.10.0_amd64.deb
+#
+#  if sudo dpkg -i ripgrep_0.10.0_amd64.deb; then
+#    success "ripgrep successful installed."
+#  else
+#    error "Failed to install ripgrep."
+#    exit 1
+#  fi
+#
+#  rm ripgrep_0.10.0_amd64.deb
+#fi
 
-  if sudo dpkg -i ripgrep_0.10.0_amd64.deb; then
-    success "ripgrep successful installed."
-  else
-    error "Failed to install ripgrep."
-    exit 1
-  fi
-
-  rm ripgrep_0.10.0_amd64.deb
-fi
-
-info "Installing fzf..."
-if fzf --version >/dev/null; then
-  success "fzf already installed."
-else
-  if sudo apt -qq install fzf; then
-    success "fzf successful installed."
-  else
-    error "Failed to install fzf."
-    exit 1
-  fi
-fi
+#info "Installing fzf..."
+#if fzf --version >/dev/null; then
+#  success "fzf already installed."
+#else
+#  if sudo apt -qq install fzf; then
+#    success "fzf successful installed."
+#  else
+#    error "Failed to install fzf."
+#    exit 1
+#  fi
+#fi
 
 info "Installing asdf..."
 if test -d ~/.asdf; then

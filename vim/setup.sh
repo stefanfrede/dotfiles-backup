@@ -20,21 +20,22 @@ repos=(
   # Syntax Highlighting And Indentation
   ap/vim-css-color
   elzr/vim-json
+  godlygeek/tabular
   hail2u/vim-css3-syntax
   jonsmithers/vim-html-template-literals
   othree/csscomplete.vim
   othree/html5.vim
   pangloss/vim-javascript
+  plasticboy/vim-markdown
   # Snippets
-  honza/vim-snippets
   mattn/emmet-vim
-  SirVer/ultisnips
   # Autocompletion & Intellisense
   othree/jspc.vim
   ternjs/tern_for_vim
   ajh17/VimCompletesMe
   # Utilities
   adelarsq/vim-matchit
+  docunext/closetag.vim
   Lokaltog/vim-easymotion
   jiangmiao/auto-pairs
   tmux-plugins/vim-tmux-focus-events
@@ -106,12 +107,6 @@ info "Move file type plugins"
 find . -name "ftplugin" | while read fn; do
 fn=$(basename $fn)
 symlink "$SOURCE/$fn" "$HOME/.vim/$fn"
-done
-
-info "Move UltiSnips snippets"
-find . -name "UltiSnips" | while read fn; do
-  fn=$(basename $fn)
-  symlink "$SOURCE/$fn" "$HOME/.vim/$fn"
 done
 
 success "Finished setting up Vim."

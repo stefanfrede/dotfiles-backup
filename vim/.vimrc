@@ -8,6 +8,7 @@ set autowrite                   " Automatically :write before running commands
 set backspace=eol,start,indent  " Backspace deletes like most programs in insert mode
 set belloff=all                 " No flashing or beeping at all
 set colorcolumn=+1              " Make it obvious where 80 characters is
+set clipboard=unnamed           " Copy to system clipboard
 set diffopt+=vertical           " Always use vertical diffs
 set encoding=utf8               " UTF-8 by default
 set hidden                      " Don't prompt to save hidden windows until exit
@@ -138,6 +139,12 @@ nmap \u :syntax sync fromstart<cr>:redraw!<cr>
 let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
+" Fix colors in Tmux
+" https://stackoverflow.com/questions/15375992/vim-difference-between-t-co-256-and-term-xterm-256color-in-conjunction-with-tmu
+if &term == "screen"
+  set t_Co=256
+endif
+
 " Fix background color erase for 256-color tmux and GNU screen
 if &term =~ '256color'
   " disable Background Color Erase (BCE) so that color schemes
@@ -227,15 +234,6 @@ let g:tmuxline_preset = {
 let g:vim_json_syntax_conceal = 0
 
 " FZF
-let $FZF_DEFAULT_COMMAND = 'rg --files --follow -g "!{.git,node_modules}/*" 2>/dev/null'
-
-" Use ripgrep instead of grep
-command! -bang -nargs=* Rg
-  \ call fzf#vim#grep(
-  \   'rg --column --line-number --no-heading --color=always --smart-case -g "!{*.lock,*-lock.json}" '.shellescape(<q-args>), 1,
-  \   <bang>0 ? fzf#vim#with_preview('up:40%')
-  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-  \   <bang>0)
 
 " Customize fzf colors to match color scheme
 let g:fzf_colors =
@@ -262,7 +260,6 @@ nmap <Leader>t :Files<CR>
 nmap <Leader>a :Rg!<CR>
 nmap <Leader>c :Colors<CR>
 
-
 " Ale
 augroup ale
   autocmd!
@@ -284,7 +281,7 @@ nnoremap [r :ALEPreviousWrap<CR>
 nmap \f <Plug>(ale_fix)
 
 " Allow custom tags
-let g:ale_html_tidy_options = ["--custom-tags true"]
+let g:ale_html_tidy_options = "-q -e -language en --custom-tags yes"
 
 " Fix files automatically on save
 let g:ale_fix_on_save = 1
@@ -293,16 +290,6 @@ let g:ale_fix_on_save = 1
 autocmd FileType vim let b:vcm_tab_complete = 'vim'
 " Close scratch window on finishing a complete or leaving insert
 autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
-
-" UltiSnips
-let g:UltiSnipsSnippetsDir='~/.vim/UltiSnips'
-let g:UltiSnipsSnippetDirectories=["UltiSnips"]
-
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-
-let g:UltiSnipsEditSplit="vertical""
 
 " Emmet
 " Enable just for html/css

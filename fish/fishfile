@@ -1,7 +1,4 @@
-barnybug/docker-fish-completion
-jethrokuan/fzf
-jethrokuan/z
-rafaelrinaldi/pure
 rstacruz/fish-asdf
-brgmnn/fish-docker-compose
+jethrokuan/z
 danhper/fish-ssh-agent
+rafaelrinaldi/pure

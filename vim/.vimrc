@@ -1,7 +1,7 @@
 " Basic Settings
 " {{{
 filetype plugin indent on
-syntax on
+syntax enable
 
 set autoread                    " Don't bother me when a file changes
 set autowrite                   " Automatically :write before running commands
@@ -9,7 +9,7 @@ set backspace=eol,start,indent  " Backspace deletes like most programs in insert
 set belloff=all                 " No flashing or beeping at all
 set colorcolumn=+1              " Make it obvious where 80 characters is
 set clipboard=unnamed           " Copy to system clipboard
-set diffopt+=vertical           " Always use vertical diffs
+set cursorline                  " Highlight the current line
 set encoding=utf8               " UTF-8 by default
 set hidden                      " Don't prompt to save hidden windows until exit
 set history=50                  " How many lines of history to save
@@ -135,26 +135,9 @@ nmap \u :syntax sync fromstart<cr>:redraw!<cr>
 
 " Aesthetics
 " {{{
-" set Vim-specific sequences for RGB colors
-let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+colorscheme nord
 
-" Fix colors in Tmux
-" https://stackoverflow.com/questions/15375992/vim-difference-between-t-co-256-and-term-xterm-256color-in-conjunction-with-tmu
-if &term == "screen"
-  set t_Co=256
-endif
-
-" Fix background color erase for 256-color tmux and GNU screen
-if &term =~ '256color'
-  " disable Background Color Erase (BCE) so that color schemes
-  " render properly when inside 256-color tmux and GNU screen.
-  " see also http://snk.tuxfamily.org/log/vim-256color-bce.html
-  set t_ut=
-endif
-
-set background=light
-colorscheme solarized
+let g:nord_cursor_line_number_background = 1
 " }}}
 
 " Plugins
@@ -176,7 +159,7 @@ endif
 
 " Lightline
 let g:lightline = {
-    \ 'colorscheme': 'solarized',
+    \ 'colorscheme': 'nord',
     \ 'active': {
     \   'left':  [[ 'mode', 'paste' ],
     \             [ 'gitbranch', 'readonly', 'filename', 'modified' ]],
@@ -218,17 +201,6 @@ function! LightlineLinterOK() abort
   let l:all_non_errors = l:counts.total - l:all_errors
   return l:counts.total == 0 ? '✓ ' : ''
 endfunction
-
-" Tmuxline
-let g:tmuxline_powerline_separators = 0
-
-let g:tmuxline_preset = {
-    \'a': '#S',
-    \'win': ['#I', '#W'],
-    \'cwin': ['#I', '#W', '#F'],
-    \'z': '#H',
-    \'options': {'status-justify' : 'left'}
-    \ }
 
 " IndentLine
 let g:vim_json_syntax_conceal = 0
@@ -279,6 +251,9 @@ nnoremap [r :ALEPreviousWrap<CR>
 
 " Fix linting errors
 nmap \f <Plug>(ale_fix)
+
+" Keep the sign gutter open
+let g:ale_sign_column_always = 1
 
 " Allow custom tags
 let g:ale_html_tidy_options = "-q -e -language en --custom-tags yes"

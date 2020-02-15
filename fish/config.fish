@@ -8,41 +8,18 @@ end
 # Set vim as editor
 set -U EDITOR vim
 
+# Set locales
+set -x LC_ALL en_US.UTF-8
+
 #
 # FZF
 #
 
-# Use the new fzf keybindings
-set -U FZF_LEGACY_KEYBINDINGS 0
-
-# Use a tmux friendly fzf version
-set -U FZF_TMUX 1
-
 # Use fd
 set -U FZF_DEFAULT_COMMAND 'fd --type file --follow --hidden --exclude .git'
 
-#
-# GPG
-#
-
-# Get a password prompt when signing commits
-set -x GPG_TTY (tty)
-
-#
-# Locales
-#
-
-# en_US.UTF-8
-set -x LC_ALL en_US.UTF-8
-
-#
-# TMUX
-#
-
-# Attach to existing or start a new TMUX session named workbench
-#if status is-interactive; and not set -q TMUX
-#  tmux new-session -A -s workbench
-#end
+# Nord colours
+set -U FZF_DEFAULT_OPTS '--color fg:#d8dee9,bg:#2e3440,hl:#a3be8c,fg+:#d8dee9,bg+:#434c5e,hl+:#a3be8c,pointer:#bf616a,info:#4c566a,spinner:#4c566a,header:#4c566a,prompt:#81a1c1'
 
 # Homebrew was complaining
 set -g fish_user_paths "/usr/local/sbin" $fish_user_paths

@@ -2,7 +2,7 @@
 
 repos=(
   # Appearance and Themes
-  altercation/vim-colors-solarized
+  arcticicestudio/nord-vim
   edkolev/tmuxline.vim
   itchyny/lightline.vim
   maximbaz/lightline-ale
@@ -19,6 +19,7 @@ repos=(
   janko-m/vim-test
   # Syntax Highlighting And Indentation
   ap/vim-css-color
+  digitaltoad/vim-pug
   elzr/vim-json
   godlygeek/tabular
   hail2u/vim-css3-syntax

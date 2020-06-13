@@ -24,7 +24,4 @@ set -U FZF_DEFAULT_OPTS '--color fg:#d8dee9,bg:#2e3440,hl:#a3be8c,fg+:#d8dee9,bg
 # Homebrew was complaining
 set -g fish_user_paths "/usr/local/sbin" $fish_user_paths
 
-# GitHub API token for Homebrew
-set -gx HOMEBREW_GITHUB_API_TOKEN c139cfa16c22b6fda76b20e06b75a02f3488e832
-
 source ~/.config/fish/aliases.fish

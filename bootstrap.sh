@@ -24,4 +24,7 @@ find * -name "setup.sh" -not -wholename "packages*" | while read setup; do
   ./$setup
 done
 
+info "Clean-up packages..."
+sudo apt -qq autoremove -y
+
 success "Finished installing Dotfiles"

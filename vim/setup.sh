@@ -90,12 +90,6 @@ for repo in ${repos[@]}; do
 done
 wait
 
-# info "Configure fzf"
-# pushd ~/.fzf
-# ./install --all
-# wait
-# popd
-
 info "Configure ternjs"
 pushd ~/.vim/pack/bundle/start/tern_for_vim/
 npm i

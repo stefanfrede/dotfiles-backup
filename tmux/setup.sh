@@ -15,7 +15,7 @@ tpm="$HOME/.tmux/plugins/tpm"
 if [ -d ~/.tmux/plugins/tpm ]; then
   success "Tmux plugin directory already exists."
 else
-  if ! git clone -q https://github.com/tmux-plugins/tpm "$tpm"; then
+  if git clone https://github.com/tmux-plugins/tpm "$tpm"; then
     success "Tmux plugin directory successfully cloned."
   else
     error "Failed to clone Tmux plugin directory."
@@ -30,10 +30,8 @@ find . -name ".tmux*" | while read fn; do
   symlink "$SOURCE/$fn" "$DESTINATION/$fn"
 done
 
+tmux new-session -d -s tmp
 tmux source ~/.tmux.conf
-
-$tpm/scripts/install_plugins.sh >/dev/null
-$tpm/scripts/clean_plugins.sh >/dev/null
-$tpm/scripts/update_plugin.sh >/dev/null
+tmux kill-session -t tmp
 
 success "Finished setting up Tmux."

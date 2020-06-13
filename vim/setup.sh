@@ -21,13 +21,13 @@ repos=(
   ap/vim-css-color
   digitaltoad/vim-pug
   elzr/vim-json
-  godlygeek/tabular
   hail2u/vim-css3-syntax
   jonsmithers/vim-html-template-literals
+  lepture/vim-jinja
   othree/csscomplete.vim
   othree/html5.vim
   pangloss/vim-javascript
-  plasticboy/vim-markdown
+  tpope/vim-liquid
   # Snippets
   mattn/emmet-vim
   # Autocompletion & Intellisense
@@ -90,11 +90,11 @@ for repo in ${repos[@]}; do
 done
 wait
 
-info "Configure fzf"
-pushd ~/.fzf
-./install --all
-wait
-popd
+# info "Configure fzf"
+# pushd ~/.fzf
+# ./install --all
+# wait
+# popd
 
 info "Configure ternjs"
 pushd ~/.vim/pack/bundle/start/tern_for_vim/

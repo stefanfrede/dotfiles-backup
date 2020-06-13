@@ -9,6 +9,7 @@ set backspace=eol,start,indent  " Backspace deletes like most programs in insert
 set belloff=all                 " No flashing or beeping at all
 set colorcolumn=+1              " Make it obvious where 80 characters is
 set clipboard=unnamed           " Copy to system clipboard
+set cmdheight=2                 " Better display for messages
 set cursorline                  " Highlight the current line
 set encoding=utf8               " UTF-8 by default
 set hidden                      " Don't prompt to save hidden windows until exit
@@ -43,6 +44,11 @@ set textwidth=80                " 80 is the new 80
 set ttyfast                     " Rendering
 set wildmenu                    " Show possible completions on command line
 set wildmode=list:longest,full  " List all options and complete
+
+" Always use vertical diffs
+if &diff
+  set diffopt+=vertical
+endif
 
 " No backup
 set nobackup
@@ -135,9 +141,16 @@ nmap \u :syntax sync fromstart<cr>:redraw!<cr>
 
 " Aesthetics
 " {{{
+if (has("termguicolors"))
+  set termguicolors
+endif
+
 colorscheme nord
 
 let g:nord_cursor_line_number_background = 1
+
+let g:nord_italic = 1
+let g:nord_italic_comments = 1
 " }}}
 
 " Plugins
@@ -207,6 +220,8 @@ let g:vim_json_syntax_conceal = 0
 
 " FZF
 
+set rtp+=/usr/local/opt/fzf
+
 " Customize fzf colors to match color scheme
 let g:fzf_colors =
 \ { 'fg':      ['fg', 'Normal'],
@@ -267,6 +282,8 @@ autocmd FileType vim let b:vcm_tab_complete = 'vim'
 autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
 
 " Emmet
+" Redefine trigger key
+let g:user_emmet_leader_key=','
 " Enable just for html/css
 let g:user_emmet_install_global = 0
 autocmd FileType html,css,scss EmmetInstall

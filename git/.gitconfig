@@ -1,7 +1,7 @@
 [user]
-	name = Stefan Frede
-	email = stefan.frede@external.t-systems.com
-  signingkey = 65B04D7D3D9E71E0
+  name = Stefan Frede
+  email = stefan@frede.dev
+  signingkey = 7B8C67BC8A221690
 [push]
   default = current
 [alias]
@@ -19,12 +19,12 @@
   stats = shortlog -sn --all --no-merges
   recent = for-each-ref --count=10 --sort=-committerdate refs/heads/ --format="%(refname:short)"
   overview = log --all --since='2 weeks' --oneline --no-merges
-  recap = log --all --oneline --no-merges --author=stefan@frede.io
-  today = log --since=00:00:00 --all --no-merges --oneline --author=stefan@frede.io
+  recap = log --all --oneline --no-merges --author=stefan@frede.dev
+  today = log --since=00:00:00 --all --no-merges --oneline --author=stefan@frede.dev
 [core]
   excludesfile = ~/.gitignore
   autocrlf = input
-  pager = delta --dark --theme="base16"
+  pager = delta --dark --theme="Nord"
   editor = vim
 [merge]
   ff = only
@@ -46,3 +46,5 @@
   colored = format:%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr, %cn)%Creset
 [github]
   user = stefanfrede
+[pull]
+	rebase = false

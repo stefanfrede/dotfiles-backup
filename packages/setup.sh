@@ -30,6 +30,18 @@ else
   fi
 fi
 
+info "Installing xsel..."
+if xsel --version >/dev/null; then
+  success "xsel already installed"
+else
+  if sudo apt -qq install xsel -y; then
+    success "xsel successful installed."
+  else
+    error "Failed to install xsel."
+    exit 1
+  fi
+fi
+
 info "Installing fish..."
 if fish --version >/dev/null; then
   success "Fish already installed"

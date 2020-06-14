@@ -18,6 +18,18 @@ echo ${machine}
 info "Update apt..."
 sudo apt update && sudo apt upgrade -y
 
+info "Installing mosh..."
+if mosh --version >/dev/null; then
+  success "mosh already installed"
+else
+  if sudo apt -qq install mosh -y; then
+    success "mosh successful installed."
+  else
+    error "Failed to install mosh."
+    exit 1
+  fi
+fi
+
 info "Installing fish..."
 if fish --version >/dev/null; then
   success "Fish already installed"

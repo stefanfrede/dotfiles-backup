@@ -19,14 +19,13 @@ repos=(
   janko-m/vim-test
   # Syntax Highlighting And Indentation
   ap/vim-css-color
-  digitaltoad/vim-pug
   elzr/vim-json
   hail2u/vim-css3-syntax
   jonsmithers/vim-html-template-literals
-  lepture/vim-jinja
   othree/csscomplete.vim
   othree/html5.vim
   pangloss/vim-javascript
+  posva/vim-vue
   tpope/vim-liquid
   # Snippets
   mattn/emmet-vim
@@ -37,7 +36,7 @@ repos=(
   # Utilities
   adelarsq/vim-matchit
   docunext/closetag.vim
-  Lokaltog/vim-easymotion
+  easymotion/vim-easymotion
   jiangmiao/auto-pairs
   tmux-plugins/vim-tmux-focus-events
   tpope/vim-commentary

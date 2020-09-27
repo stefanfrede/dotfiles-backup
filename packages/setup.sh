@@ -30,6 +30,18 @@ else
   fi
 fi
 
+info "Installing rename..."
+if rename --version >/dev/null; then
+  success "rename already installed"
+else
+  if sudo apt -qq install rename -y; then
+    success "rename successful installed."
+  else
+    error "Failed to install rename."
+    exit 1
+  fi
+fi
+
 info "Installing xsel..."
 if xsel --version >/dev/null; then
   success "xsel already installed"
@@ -226,6 +238,13 @@ else
   fi
 
   rm git-delta_0.1.1_amd64.deb
+fi
+
+info "Installing starhip..."
+if starhip --version >/dev/null; then
+  success "starship already installed"
+else
+  curl -fsSL https://starship.rs/install.sh | bash
 fi
 
 info "Installing vim..."

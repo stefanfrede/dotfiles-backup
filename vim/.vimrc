@@ -94,6 +94,11 @@ let g:is_posix = 1
 
 " Resize panes when window/terminal gets resize
 autocmd VimResized * :wincmd =
+
+" Reasonable indentation inside of script and style tags
+let g:html_indent_script1 = "inc"
+let g:html_indent_style1 = "inc"
+
 " }}}
 
 " Mappings and shortcuts
@@ -264,14 +269,14 @@ augroup END
 nnoremap ]r :ALENextWrap<CR>
 nnoremap [r :ALEPreviousWrap<CR>
 
-" Fix linting errors
-nmap \f <Plug>(ale_fix)
-
 " Keep the sign gutter open
 let g:ale_sign_column_always = 1
 
 " Allow custom tags
 let g:ale_html_tidy_options = "-q -e -language en --custom-tags yes"
+
+" Fix linting errors
+nmap \f <Plug>(ale_fix)
 
 " Fix files automatically on save
 let g:ale_fix_on_save = 1
@@ -286,5 +291,17 @@ autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
 let g:user_emmet_leader_key=','
 " Enable just for html/css
 let g:user_emmet_install_global = 0
-autocmd FileType html,css,scss,liquid EmmetInstall
+autocmd FileType html,css,vue EmmetInstall
+
+" closetag.vim
+" Configure plugin to work inside html template literals
+let g:closetag_filetypes = 'html,xhtml,phtml,javascript'
+let g:closetag_regions = {
+      \ 'javascript':     'litHtmlRegion',
+      \ }
+
+" vim-vue-plugin
+let g:vim_vue_plugin_load_full_syntax = 0
+let g:vim_vue_plugin_highlight_vue_attr = 1
+let g:vim_vue_plugin_highlight_vue_keyword = 1
 " }}}

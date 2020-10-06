@@ -22,10 +22,10 @@ repos=(
   elzr/vim-json
   hail2u/vim-css3-syntax
   jonsmithers/vim-html-template-literals
+  leafOfTree/vim-vue-plugin
   othree/csscomplete.vim
   othree/html5.vim
   pangloss/vim-javascript
-  posva/vim-vue
   tpope/vim-liquid
   # Snippets
   mattn/emmet-vim
@@ -35,7 +35,7 @@ repos=(
   ajh17/VimCompletesMe
   # Utilities
   adelarsq/vim-matchit
-  docunext/closetag.vim
+  alvan/vim-closetag
   easymotion/vim-easymotion
   jiangmiao/auto-pairs
   tmux-plugins/vim-tmux-focus-events

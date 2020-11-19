@@ -38,6 +38,7 @@ repos=(
   alvan/vim-closetag
   easymotion/vim-easymotion
   jiangmiao/auto-pairs
+  junegunn/vim-peekaboo
   tmux-plugins/vim-tmux-focus-events
   tpope/vim-commentary
   tpope/vim-repeat

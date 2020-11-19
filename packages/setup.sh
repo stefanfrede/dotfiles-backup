@@ -241,7 +241,7 @@ else
 fi
 
 info "Installing starhip..."
-if starhip --version >/dev/null; then
+if starship --version >/dev/null; then
   success "starship already installed"
 else
   curl -fsSL https://starship.rs/install.sh | bash

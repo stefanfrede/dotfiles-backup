@@ -2,3 +2,6 @@
 autocmd BufNewFile,BufRead PULLREQ_EDITMSG set syntax=gitcommit
 setlocal textwidth=72
 setlocal spell
+
+" Disable EditorConfig
+let b:EditorConfig_disable = 1

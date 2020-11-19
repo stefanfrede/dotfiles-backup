@@ -286,6 +286,9 @@ nmap \f <Plug>(ale_fix)
 " Fix files automatically on save
 let g:ale_fix_on_save = 1
 
+" EditorConfig
+let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
+
 " VimCompletesMe
 autocmd FileType vim let b:vcm_tab_complete = 'vim'
 " Close scratch window on finishing a complete or leaving insert
@@ -296,7 +299,7 @@ autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
 let g:user_emmet_leader_key=','
 " Enable just for html/css
 let g:user_emmet_install_global = 0
-autocmd FileType html,css,vue EmmetInstall
+autocmd FileType css,html,styl,vue EmmetInstall
 
 " closetag.vim
 " Configure plugin to work inside html template literals

@@ -48,3 +48,5 @@
   user = stefanfrede
 [pull]
 	rebase = false
+[init]
+	defaultBranch = main

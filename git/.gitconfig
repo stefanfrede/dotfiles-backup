@@ -21,6 +21,7 @@
   overview = log --all --since='2 weeks' --oneline --no-merges
   recap = log --all --oneline --no-merges --author=stefan@frede.dev
   today = log --since=00:00:00 --all --no-merges --oneline --author=stefan@frede.dev
+  files = diff-tree --no-commit-id --name-only -r
 [core]
   excludesfile = ~/.gitignore
   autocrlf = input

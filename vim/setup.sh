@@ -19,8 +19,6 @@ repos=(
   janko-m/vim-test
   # Syntax Highlighting And Indentation
   ap/vim-css-color
-  clavery/vim-dwre
-  editorconfig/editorconfig-vim
   elzr/vim-json
   hail2u/vim-css3-syntax
   jonsmithers/vim-html-template-literals
@@ -29,7 +27,6 @@ repos=(
   othree/html5.vim
   pangloss/vim-javascript
   tpope/vim-liquid
-  wavded/vim-stylus
   # Snippets
   mattn/emmet-vim
   # Autocompletion & Intellisense

@@ -18,4 +18,3 @@ tags
 tmp/**/*
 .tool-versions
 *.code-workspace
-dw-cli.json

@@ -13,7 +13,7 @@ set autowrite                   " Automatically :write before running commands
 set backspace=eol,start,indent  " Backspace deletes like most programs in insert mode
 set belloff=all                 " No flashing or beeping at all
 set colorcolumn=+1              " Make it obvious where 80 characters is
-set clipboard=unnamed           " Copy to system clipboard
+set clipboard=unnamedplus       " Copy to system clipboard
 set cmdheight=2                 " Better display for messages
 set cursorline                  " Highlight the current line
 set encoding=utf8               " UTF-8 by default

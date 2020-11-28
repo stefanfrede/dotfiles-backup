@@ -25,8 +25,24 @@
 [core]
   excludesfile = ~/.gitignore
   autocrlf = input
-  pager = delta --dark --theme="Nord"
+  pager = delta
   editor = vim
+[delta]
+  features = line-numbers
+  syntax-theme = Nord
+  minus-style = "#2e3440" "#bf616a"
+  minus-emph-style = "#2e3440" "#81a1c1"
+  plus-style = "#2e3440" "#a3be8c"
+  plus-emph-style = "#2e3440" "#81a1c1"
+[delta "line-numbers"]
+  line-numbers = true
+  line-numbers-minus-style = "#bf616a"
+  line-numbers-plus-style = "#a3be8c"
+  line-numbers-zero-style = "#4c566a"
+  line-numbers-left-style = "#4c566a"
+  line-numbers-right-style = "#4c566a"
+[interactive]
+  diffFilter = delta --color-only
 [merge]
   ff = only
 [commit]
@@ -48,6 +64,6 @@
 [github]
   user = stefanfrede
 [pull]
-	rebase = false
+  rebase = false
 [init]
-	defaultBranch = main
+  defaultBranch = main

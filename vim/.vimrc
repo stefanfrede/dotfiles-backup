@@ -29,6 +29,7 @@ set list                        " Show whitespace as special chars - see listcha
 set listchars=tab:»·,trail:·,nbsp:·
 set matchtime=0                 " Speed up escape after (){} chars
 set modelines=0                 " Disable modelines as a security precaution
+set t_TI= t_TE=                 " Disable modifyOtherKeys
 set nocompatible                " Vim, not vi!
 set nojoinspaces                " Use one space, not two, after punctuation
 set noshowmode                  " Hide mode information -- INSERT --

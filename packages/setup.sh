@@ -85,10 +85,7 @@ info "Installing asdf..."
 if test -d ~/.asdf; then
   success "asdf already installed."
 else
-  if git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.7.8 &> /dev/null; then
-    echo '. $HOME/.asdf/asdf.sh' >> ~/.bashrc
-    echo '. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc
-
+  if git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.0 &> /dev/null; then
     success "asdf successful installed."
   else
     error "Failed to install asdf."
@@ -103,10 +100,10 @@ else
   asdf update
 
   asdf plugin-add nodejs https://github.com/asdf-vm/asdf-nodejs.git
-  bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring
+  bash -c '${ASDF_DATA_DIR:=$HOME/.asdf}/plugins/nodejs/bin/import-release-team-keyring'
 
-  asdf install nodejs 14.4.0
-  asdf global nodejs 14.4.0
+  asdf install nodejs lts
+  asdf global nodejs lts
 fi
 
 info "Update npm..."

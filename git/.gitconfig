@@ -1,7 +1,7 @@
 [user]
   name = Stefan Frede
   email = stefan@frede.dev
-  signingkey = 7B8C67BC8A221690
+  signingkey = DF19E1CAE149104A4CD7F8CAF494D54866659484
 [push]
   default = current
 [alias]

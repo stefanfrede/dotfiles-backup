@@ -8,9 +8,6 @@ end
 # Set vim as editor
 set -U EDITOR vim
 
-# Set locales
-# set -x LC_ALL en_US.UTF-8
-
 # Use fd in fzf
 set -U FZF_DEFAULT_COMMAND 'fd --type file --follow --hidden --exclude .git'
 
@@ -19,5 +16,12 @@ set -U FZF_DEFAULT_OPTS '--color fg:#d8dee9,bg:#2e3440,hl:#a3be8c,fg+:#d8dee9,bg
 
 # Install Starship (https://starship.rs/)
 starship init fish | source
+
+# Launch gpg-agent
+if status --is-interactive
+  set -x GPG_TTY (tty)
+  set -x SSH_AUTH_SOCK (gpgconf --list-dirs agent-ssh-socket)
+  gpgconf --launch gpg-agent
+end
 
 source ~/.config/fish/aliases.fish

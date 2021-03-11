@@ -297,7 +297,7 @@ autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
 let g:user_emmet_leader_key=','
 " Enable just for html/css
 let g:user_emmet_install_global = 0
-autocmd FileType html,css,vue EmmetInstall
+autocmd FileType html,css,scss,vue EmmetInstall
 
 " closetag.vim
 " Configure plugin to work inside html template literals

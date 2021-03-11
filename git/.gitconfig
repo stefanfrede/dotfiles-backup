@@ -5,23 +5,19 @@
 [push]
   default = current
 [alias]
-  aa = add --all
-  ap = add --patch
-  branches = for-each-ref --sort=-committerdate --format=\"%(color:blue)%(authordate:relative)\t%(color:red)%(authorname)\t%(color:white)%(color:bold)%(refname:short)\" refs/remotes
-  ci = commit -v
-  co = checkout
-  pf = push --force-with-lease
-  st = status
-  lg = log --graph --pretty=colored --abbrev-commit --date=relative
+  lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
   hist = log --graph --pretty=format:'%h %ad | %s%d [%an]' --date=short
   last = log -1 -p HEAD
-  unstage = reset HEAD --
-  stats = shortlog -sn --all --no-merges
-  recent = for-each-ref --count=10 --sort=-committerdate refs/heads/ --format="%(refname:short)"
+  latest = show --name-only --oneline HEAD
+  down = pull --rebase origin master
+  up = push -u origin master
+  save = "!git add -A; git commit ."
+  uptags = push --follow-tags
+  downtags = fetch --tags
+  branches = for-each-ref --sort=-committerdate --format=\"%(color:blue)%(authordate:relative)\t%(color:red)%(authorname)\t%(color:white)%(color:bold)%(refname:short)\" refs/remotes
   overview = log --all --since='2 weeks' --oneline --no-merges
-  recap = log --all --oneline --no-merges --author=stefan@frede.dev
-  today = log --since=00:00:00 --all --no-merges --oneline --author=stefan@frede.dev
-  files = diff-tree --no-commit-id --name-only -r
+  recent = for-each-ref --count=10 --sort=-committerdate refs/heads/ --format="%(refname:short)"
+  stats = shortlog -sn --all --no-merges
 [core]
   excludesfile = ~/.gitignore
   autocrlf = input

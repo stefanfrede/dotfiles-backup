@@ -24,4 +24,7 @@ if status --is-interactive
   gpgconf --launch gpg-agent
 end
 
+# Add asdf to shell
+source ~/.asdf/asdf.fish
+
 source ~/.config/fish/aliases.fish

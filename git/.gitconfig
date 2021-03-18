@@ -5,6 +5,7 @@
 [push]
   default = current
 [alias]
+  pf = push --force-with-lease
   lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
   hist = log --graph --pretty=format:'%h %ad | %s%d [%an]' --date=short
   last = log -1 -p HEAD

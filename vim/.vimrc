@@ -72,6 +72,10 @@ set tabstop=2
 " Use braces by default
 silent! set foldmethod=marker
 
+" Auto save and load folds
+au BufWinLeave * mkview
+au BufWinEnter * silent loadview
+
 " Set spellfile
 set spellfile=$HOME/.vim/spell/en.utf-8.add,~/.vim/spell/de.utf-8.add
 

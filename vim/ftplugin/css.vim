@@ -1,5 +1,9 @@
+" Use indentation by default
+silent! set foldmethod=indent
+
 " Enable keyword completion
 setlocal iskeyword+=-
+
 
 " CSS Omni Complete Function for CSS3
 setlocal omnifunc=csscomplete#CompleteCSS noci

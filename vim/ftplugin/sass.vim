@@ -1,3 +1,6 @@
+" Use indentation by default
+silent! set foldmethod=indent
+
 " Enable keyword completion
 setlocal iskeyword+=-
 

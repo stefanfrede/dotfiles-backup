@@ -1,3 +1,6 @@
+" Use indentation by default
+silent! set foldmethod=indent
+
 " Run css, javascript and vue linters for vue files.
 let b:ale_linter_aliases = ['css', 'javascript', 'vue']
 

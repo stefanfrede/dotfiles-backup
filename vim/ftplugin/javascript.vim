@@ -1,3 +1,6 @@
+" Use syntax by default
+silent! set foldmethod=syntax
+
 " Enable linting
 let b:ale_linters = ['eslint']
 

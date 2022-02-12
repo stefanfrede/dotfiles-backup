@@ -12,7 +12,9 @@ repos=(
   junegunn/fzf.vim
   # Git
   airblade/vim-gitgutter
+  shumphrey/fugitive-gitlab.vim
   tpope/vim-fugitive
+  tpope/vim-rhubarb
   # Linting and Code Formatting
   dense-analysis/ale
   # Testing
@@ -39,8 +41,9 @@ repos=(
   easymotion/vim-easymotion
   jiangmiao/auto-pairs
   junegunn/vim-peekaboo
+  majutsushi/tagbar
+  preservim/nerdcommenter
   tmux-plugins/vim-tmux-focus-events
-  tpope/vim-commentary
   tpope/vim-repeat
   tpope/vim-surround
   tpope/vim-unimpaired

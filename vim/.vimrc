@@ -191,7 +191,7 @@ let g:lightline = {
     \             ['readonly', 'linter_warnings', 'linter_errors', 'linter_ok']]
     \ },
     \ 'component_function': {
-    \   'gitbranch': 'fugitive#head'
+    \   'gitbranch': 'FugitiveHead'
     \ },
     \ 'component_expand': {
     \   'linter_warnings': 'LightlineLinterWarnings',
@@ -297,7 +297,7 @@ autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
 let g:user_emmet_leader_key=','
 " Enable just for html/css
 let g:user_emmet_install_global = 0
-autocmd FileType html,css,scss,vue EmmetInstall
+autocmd FileType html,css,php,scss,vue EmmetInstall
 
 " closetag.vim
 " Configure plugin to work inside html template literals
@@ -307,7 +307,46 @@ let g:closetag_regions = {
       \ }
 
 " vim-vue-plugin
-let g:vim_vue_plugin_load_full_syntax = 0
-let g:vim_vue_plugin_highlight_vue_attr = 1
-let g:vim_vue_plugin_highlight_vue_keyword = 1
+let g:vim_vue_plugin_config = { 
+      \'syntax': {
+      \   'template': ['html'],
+      \   'script': ['javascript'],
+      \   'style': ['css'],
+      \},
+      \'full_syntax': [],
+      \'initial_indent': [],
+      \'attribute': 1,
+      \'keyword': 1,
+      \'foldexpr': 0,
+      \'debug': 0,
+      \}
+
+" fugitive-gitlab
+let g:fugitive_gitlab_domains = ['https://gitlab.wyn.rocks']
+let g:gitlab_api_keys = {'gitlab.wyn.rocks': 'wynaccesstoken'}
+
+" NERD Commenter
+let g:ft = ''
+function! NERDCommenter_before()
+  if &ft == 'vue'
+    let g:ft = 'vue'
+    let stack = synstack(line('.'), col('.'))
+    if len(stack) > 0
+      let syn = synIDattr((stack)[0], 'name')
+      if len(syn) > 0
+        exe 'setf ' . substitute(tolower(syn), '^vue_', '', '')
+      endif
+    endif
+  endif
+endfunction
+
+function! NERDCommenter_after()
+  if g:ft == 'vue'
+    setf vue
+    let g:ft = ''
+  endif
+endfunction
+
+" Tagbar
+nmap <F8> :TagbarToggle<CR>
 " }}}

@@ -278,6 +278,9 @@ nnoremap [r :ALEPreviousWrap<CR>
 " Keep the sign gutter open
 let g:ale_sign_column_always = 1
 
+" set path to tidy executable
+let g:ale_html_tidy_executable = "/usr/bin/tidy"
+
 " Allow custom tags
 let g:ale_html_tidy_options = "-q -e -language en --custom-tags yes"
 
